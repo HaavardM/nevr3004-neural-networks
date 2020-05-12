@@ -1,13 +1,13 @@
 clear all; close all; clc;
 
 figure(1);
-plotPCA('Mouse12-120806_awakedata.mat');
+task2('Mouse12-120806_awakedata.mat');
 figure(2);
-plotPCA('Mouse28-140313_awakedata.mat');
+task2('Mouse28-140313_awakedata.mat');
 
 
 
-function scores = plotPCA(filename)
+function scores = task2(filename)
     load(filename)
     % first and last timestamp
     startTime = trackingtimes(1);
