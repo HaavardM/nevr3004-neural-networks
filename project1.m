@@ -73,7 +73,7 @@ for i = 1:n_cells
     
     % compute mutual information between firing rate and HD
 
-    % Assume 0log(0) = 0 (in case firing rate is zero)
+    % Assume 0log(0) = 0 * -inf = 0 (in case firing rate is zero)
     % Only sum together fields with non-zero firing rate
     not_zero_inds = (firing_rate ~= 0);
     if ~isempty(not_zero_inds)
