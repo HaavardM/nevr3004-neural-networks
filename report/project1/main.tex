@@ -17,15 +17,10 @@
 \usepackage{subcaption}
 \usepackage{siunitx}
 \usepackage{biblatex}
-\addbibresource{sample.bib}
+\addbibresource{references.bib}
 \usepackage[section]{placeins}
 \usepackage{float}
 
-
-% Proofs
-\newcommand\TombStone{\rule{.5em}{.5em}} % The tombest stone
-\renewcommand\qedsymbol{\TombStone}
-\renewcommand{\proofname}{Proof.} % Nice proof
 
 \title{NEVR3004}
 \author{Håvard Skåra Mellbye}
@@ -33,14 +28,14 @@
 
 \begin{document}
 \maketitle
-%\input{introduction.tex}
 
-%\newpage
-%\input{a1.tex}
-%\input{a2.tex}
-%\input{a3.tex}
+\input{abstract.tex}
+\input{introduction.tex}
+\input{methods.tex}
+\input{results.tex}
+\input{discussion.tex}
 
 %\input{conclusion.tex}
-%\printbibliography
+\printbibliography
 \end{document}
 

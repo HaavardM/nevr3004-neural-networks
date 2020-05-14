@@ -1,0 +1,21 @@
+\section{Method}
+The datasets originate from a study on the mechanism behind head direction sense \cite{projectdata}.
+Five adult male and two female mice were implanted with recording electrodes under anesthesia \cite{projectdata}.
+Silicon probes were mounted on movable drives for recording of neural activity in the anteriour thalamus in all mice, while in additional three of the mice probes were also mounted in the post-subiculum (PoS) \cite{projectdata}. The remaning four mice with probes only mounted in the anteriour thalamus, additional probes were mounted in the hippocampal CA1 pyramidal layer for accurate sleep scoring \cite{projectdata}.
+The head directions (HD) were tracked using two light-emitting-diodes (LEDs) mounted to the back of the head and recored using a videocamera with a frame rate of 30fps. The data was then resampled to 39Hz by the aquisition system \cite{projectdata}.
+Data from two mice were explored, mouse 12 with probes only in the anteriour thalamus and mouse 28 with additional probes in the PoS.  
+
+The electrode spikes were encoded as timestamps synchronized with the tracked head direction. The timestamps were binned into timebins with a time resolution of 
+$$\Delta t = \frac{1}{39Hz} \approx 25.64ms$$ 
+corresponding to the sampling frequency of $39$Hz set by the aquisition system. Each bin corresponds to the number of cell firings over a period of $\Delta t$ time.
+
+The continious range of possible head directions, $\theta \in [0, 2\pi)$, were discretized into a desired number of edges $N_{HD}$ with fixed spacing, such that
+$$\theta \in \{\frac{2 \pi k}{N_{HD}}| k \in \mathbb{N}, 0 \leq k \leq N_{HD} \}$$
+and each tracked head direction were binned according to the rule
+\begin{equation}
+    b_k = b_k + \begin{cases}
+        1, & \text{if } \theta_k \leq \theta < \theta_{k+1} \\
+        0, & \text{otherwise}
+    \end{cases}
+\end{equation}
+where $b_k$ corresponds to the number of samples in bin $k$ and $\theta_k$ is the $k$-th discrete value for $\theta$. The same binning was used
