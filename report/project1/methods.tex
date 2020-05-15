@@ -5,17 +5,49 @@ Silicon probes were mounted on movable drives for recording of neural activity i
 The head directions (HD) were tracked using two light-emitting-diodes (LEDs) mounted to the back of the head and recored using a videocamera with a frame rate of 30fps. The data was then resampled to 39Hz by the aquisition system \cite{projectdata}.
 Data from two mice were explored, mouse 12 with probes only in the anteriour thalamus and mouse 28 with additional probes in the PoS.  
 
-The electrode spikes were encoded as timestamps synchronized with the tracked head direction. The timestamps were binned into timebins with a time resolution of 
+The electrode spikes can be encoded as timestamps synchronized with the tracked head direction. The timestamps is binned into timebins with a time resolution of 
 $$\Delta t = \frac{1}{39Hz} \approx 25.64ms$$ 
-corresponding to the sampling frequency of $39$Hz set by the aquisition system. Each bin corresponds to the number of cell firings over a period of $\Delta t$ time.
+corresponding to the sampling frequency of $39$Hz set by the aquisition system.
+Each bin corresponds to the number of cell firings over a period of $\Delta t$ time, and each sample has a corresponding head angle.
+Dividing by the sampling time yields the number of spikes per unit time in each timebin.
 
-The continious range of possible head directions, $\theta \in [0, 2\pi)$, were discretized into a desired number of edges $N_{HD}$ with fixed spacing, such that
-$$\theta \in \{\frac{2 \pi k}{N_{HD}}| k \in \mathbb{N}, 0 \leq k \leq N_{HD} \}$$
-and each tracked head direction were binned according to the rule
+The continious range of possible head directions, 
+$\theta \in [0, 2\pi)$
+, can be discretized into a desired number of edges $N_{HD}$ with fixed spacing such that
 \begin{equation}
-    b_k = b_k + \begin{cases}
-        1, & \text{if } \theta_k \leq \theta < \theta_{k+1} \\
-        0, & \text{otherwise}
-    \end{cases}
+\theta_k \in \{\frac{2 \pi k}{N_{HD}}| k \in \mathbb{N}, 0 \leq k \leq N_{HD} \}
 \end{equation}
-where $b_k$ corresponds to the number of samples in bin $k$ and $\theta_k$ is the $k$-th discrete value for $\theta$. The same binning was used
+and each tracked head direction sample is binned according to the rule
+\begin{equation}
+    f_{\theta}(\theta) =  \begin{cases}
+        \theta_0, & \text{if } \theta_0 \leq \theta < \theta_{1} \\
+        \theta_1, & \text{if } \theta_1 \leq \theta < \theta_{2} \\
+         & \vdots \\
+        \theta_k, & \text{if } \theta_k \leq \theta < \theta_{k+1}
+    \end{cases} \quad \text{for} \quad 0 \leq k < N_{HD}
+\end{equation}
+The number of cell firings were binned accordingly to create an overview of number of spikes per head angle.
+The firing rate can be found by dividing the number of spikes by the number of head direction samples for each bin.
+\begin{equation}
+    \lambda_k = \frac{\sum_i S_i}{\sum_i 1} \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
+\end{equation}
+where $S_t$ is the number of spikes in timestep $t$, $\theta_t$ is the head angle in timestep $t$ and $N$ is the number of timesteps. Tuning curves are created by plotting the firing rate $\lambda_k$ against the head direction $\theta_k$.
+
+The mutual information score can be approximated using the discrete definition of mutual information
+\begin{equation}\label{eq:mutual_info}
+    I(X;Y) = \sum_{i, j} Pr(y_i,x_j) \log_2(\frac{Pr(y_i, x_j)}{Pr(y_i)Pr(x_j)}) = \sum_{i,j}Pr(y_i|x_j)Pr(x_j) \log_2(\frac{Pr(y_i | x_j)Pr(x_j)}{Pr(y_i)Pr(x_j)})
+\end{equation}
+The probability of a cell firing during a short period of time $\Delta t$ while the rat is in bin $k$ can be approximated by
+\begin{align} \label{eq:probs}
+    Pr(S=1 | X = k) &= \lambda_k \Delta t & Pr(S=1) = \lambda \Delta t = \Delta t \sum_k \lambda_k
+\end{align}
+where $\lambda_k$ is the mean fire rate in head direction bin $k$ and $\lambda$ is the mean firing rate over all bins.
+By inserting \cref{eq:probs} into \cref{eq:mutual_info} it can be shown that the mutal information can be calculated using a discrete approximation \cite{mutualinfo}.
+\begin{equation}
+    I \approx \sum_k \lambda_k \Delta t \log_2(\frac{\lambda_k}{\lambda})Pr_\theta(k)
+\end{equation}
+The prior distribution of head angles can be estimated by 
+\begin{equation}
+    \hat{Pr}_\theta(X = k) = \frac{\sum_i 1}{N}  \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
+\end{equation}
+i.e. the proportion of samples corresponding to bin $k$.

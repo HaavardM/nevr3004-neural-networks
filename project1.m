@@ -50,7 +50,7 @@ function [firing_rate, mean_rate, mutual_info, edges_hd, cell_name, probability_
         
         % bin spike data: from spike times to number of spikes per unit time of tracking data
         % read documentation to see what's happening here!
-        binnedSpikes = histcounts(spikes,edges_t);
+        binnedSpikes = histcounts(spikes,edges_t) / (delta_t / 1000);
         
         % try to understand what's happening here! it's a key step
         for iBin = 1:n_bins_angle
@@ -62,7 +62,7 @@ function [firing_rate, mean_rate, mutual_info, edges_hd, cell_name, probability_
         
         % convert to Hz (spikes per sec) if you haven't already
         % this vector is a TUNING CURVE
-        firing_rate(:,i) = 1000*firing_rate(:,i) / delta_t;
+        firing_rate(:,i) = firing_rate(:,i);
         % compute probability density (proportion of time spent at each HD angle)
         probability_density(:,i) = occupancy ./ sum(occupancy);
         
