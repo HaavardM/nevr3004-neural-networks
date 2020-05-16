@@ -1,18 +1,62 @@
 close all;
-[firing_rate, mean_rate, mutual_info, edges_hd, cell_name, P] = part1("Mouse12-120806_awakedata.mat");
-%[firing_rate_28, mean_rate_28, mutual_info_28, edges_hd, cell_name] = part1("Mouse28-140313_awakedata.mat");
 
-for i = 1:size(firing_rate, 2)
-   clf;
-   x = rad2deg(edges_hd(1:end-1));
-   y = firing_rate(:, i)';
-   plot(x, y);
-   name = cell_name(i, cell_name(i, :) ~= ' ');
-   title(sprintf("%s, I = %.3f", name, mutual_info(i)));
-   xlabel("Head Angle [\circ]");
-   ylabel("Firing Rate [Hz]");
-   pause;
-end
+%Task 1b
+
+
+filename_12 = "Mouse12-120806_awakedata.mat";
+filename_28 = "Mouse28-140313_awakedata.mat";
+%[firing_rate, mean_rate, mutual_info, edges_hd, cell_name, P] = part1("Mouse12-120806_awakedata.mat");
+[firing_rate_12, mean_rate_12, mutual_info_12, edges_hd, cell_name_12] = part1(filename_12);
+[firing_rate_28, mean_rate_28, mutual_info_28, edges_hd, cell_name_28] = part1(filename_28);
+cell_name_12 = cellstr(cell_name_12);
+cell_name_28 = cellstr(cell_name_28);
+
+
+
+%1A
+x = rad2deg(edges_hd(1:end-1));
+% for i = 1:size(firing_rate_12, 2)
+%    clf;
+%    y = firing_rate_12(:, i)';
+%    plot(x, y);
+%    name = cell_name_12{i};
+%    title(sprintf("Neuron %s, Mutual Info = %.3f", name, mutual_info_12(i)));
+%    xlabel("Head Angle [\circ]");
+%    ylabel("Firing Rate [Hz]");
+%    print(sprintf("report/project1/figs/%s/%s", filename_12, name), "-depsc");
+% end
+
+%1B
+C12_T3C10 = firing_rate_12(:, cell_name_12 == "T3C10");
+C12_T4C7 = firing_rate_12(:, cell_name_12 == "T4C7");
+C28_T8C7 = firing_rate_28(:, cell_name_28 == "T8C7");
+C28_T4C14 = firing_rate_28(:, cell_name_28 == "T4C14");
+
+figure(2);
+subplot(2,2,1);
+plot(x, C12_T3C10);
+title("a) Mouse 12: T3C10 (Thalamus)");
+xlabel("Head angle [\circ]"); ylabel("Firing Rate [Hz]");
+xlim([0, 360]);
+subplot(2,2,2);
+plot(x, C12_T4C7);
+title("b) Mouse 12: T4C7 (Thalamus)");
+xlabel("Head angle [\circ]"); ylabel("Firing Rate [Hz]");
+xlim([0, 360]);
+subplot(2,2,3);
+plot(x, C28_T8C7);
+title("c) Mouse 28: T8C7 (Thalamus)");
+xlabel("Head angle [\circ]"); ylabel("Firing Rate [Hz]");
+xlim([0, 360]);
+subplot(2,2,4);
+plot(x, C28_T4C14);
+title("d) Mouse 28: T4C14 (Post Subiculum)");
+xlabel("Head angle [\circ]"); ylabel("Firing Rate [Hz]");
+xlim([0, 360]);
+print("report/project1/figs/1b", "-depsc");
+
+
+[firing_rate, mean_rate, mutual_info, edges_hd, cell_name] = part1(filename);
 
 
 function [firing_rate, mean_rate, mutual_info, edges_hd, cell_name, probability_density] = part1(filename)

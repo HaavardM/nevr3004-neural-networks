@@ -29,10 +29,10 @@ and each tracked head direction sample is binned according to the rule
 \end{equation}
 The number of cell firings were binned accordingly to create an overview of number of spikes per head angle.
 The firing rate can be found by dividing the number of spikes by the number of head direction samples for each bin.
-\begin{equation}
+\begin{equation} \label{eq:firing_rate}
     \lambda_k = \frac{\sum_i S_i}{\sum_i 1} \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
 \end{equation}
-where $S_t$ is the number of spikes in timestep $t$, $\theta_t$ is the head angle in timestep $t$ and $N$ is the number of timesteps. Tuning curves are created by plotting the firing rate $\lambda_k$ against the head direction $\theta_k$.
+where $S_i$ is the number of spikes in timestep $i$, $\theta_t$ is the head angle in timestep $t$ and $N$ is the number of timesteps. Tuning curves are created by plotting the firing rate $\lambda_k$ against the head direction $\theta_k$ in MATLAB or other similar tools.
 
 \subsection{Mutual information}
 The mutual information score can be calculated using 
@@ -57,3 +57,9 @@ The prior distribution of head angles can be estimated by
     \hat{Pr}(X = k) = \frac{\sum_i 1}{N}  \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
 \end{equation}
 i.e. the proportion of samples corresponding to bin $k$.
+
+\subsection{Principal Component Analysis}
+To reduce the feature space from many potentially unimportant variables to only a few important ones, principal analysis can be used. 
+The goal of PCA is to create new variables from linear transformations of the original variables (i.e. creating a new basis). More specifically the goal is to create new variables which describe as much of the variance in the original data as possible, with as few variables as possible. 
+The amount of variance explained by each variable is sorted descendingly with the first principal component explains the most. MATLAB can be used to perform PCA analysis by giving it a $NxP$ matrix where $N$ is the number of samples and $P$ is the number of features. The output PCA \texttt{scores} contains the original samples represented by the new basis.  
+A color coded scatter plot can be generated from the first few principal components. 
