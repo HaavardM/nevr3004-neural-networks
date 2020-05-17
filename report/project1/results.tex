@@ -1,10 +1,15 @@
 \section{Results}
-To interpret the response of the different cells to stimuli, tuning curves were created by calculating and plotting \cref{eq:firing_rate} agains the stimuli (head direction). We can see from \cref{fig:1a_two_tuning_curves} how different the responses to the stimuli may be for different cells. Some cells may have a obvious correlation between stimuli and response, while others appears to more or less unaffected.
+To test which of the neurons are reacting to the head direction, tuning curves were created from \cref{eq:firing_rate}. The tuning curves show how the mean firing rate varies with stimulus, and give a good indication of which cells contains information about the head direction and which do not. \cref{fig:1a_two_tuning_curves} are examples of two very different tuning curves which shows how much the response varies for different cells. 
+In \cref{fig:1b_convincing_tuning} there are tuning curves from two cells in each session, and it shows how there appears to be a clear reaction to certian stimuli for some of the cells.
+
+To quantify the amount of information the spike-train of a cell contains about the head direction, the mutual information was calculated using \cref{eq:mutinfo_disc}. The information is quantified as bits per unit time, and tells us the number of bits of information we expect to get during a short period of time for a given cell. \cref{fig:1b_convincing_tuning} also includes the corresponding mutual information for two different cells.
+
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figs/Mouse12-120806_awakedata.mat/T3C10.eps}
         \caption{Cell with convining tuning curve. There appears to be a strong reaction to stimuli.}
+        \label{fig:1a_high_mut_info}
     \end{subfigure}
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figs/Mouse12-120806_awakedata.mat/T2C2.eps}
