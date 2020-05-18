@@ -1,8 +1,11 @@
 \section{Discussion}
 The aim of this paper were to uncover the information hidden in the spike-train of head direction neurons in the brain.
-We found that the neurons contains useful information about the head direction of mice. By creating tuning curves and calculating the mutual information between head direction and neural activity, we have postulated how the neurons can be used to update the set of possible head direction, much the same way a detective use evidence to limit the search for a suspect. We have also used principal components analysis to create a better basis of the data, and to reduce the number of variables.
+We found that the neurons contains useful information about the head direction of mice. By creating tuning curves and calculating the mutual information between head direction and neural activity, we have postulated how the neurons can be used to update the set of possible head direction, much the same way a detective use evidence to limit the search for a suspect. By only knowing the spike-train of multiple HD cells, we can make edjucated guesses about the true head direction. This could be developed further to develop algorithms for predicting head direction using HD cell activity as input. 
 
-We can however not conclude whether we are truly able to predict head direction by only looking at neural activity. We have not implemented a proof-of-concept, and even though the data look promising, we may still lack some information. The PCA analysis does however look very promising, with an trend in the color when visualizing the first two principal components.
+While we are able to create edjuacted guesses, we can only approach the problem of predicting head direction using a probabilistic approach. Each bit of information we gain help us shape the probability distribution over different head directions, but we never gain a definitive answer. 
+
+We also investigated whether performing a change of basis could help better visualize the dataset. By performing PCA and using only the first two principal components, we saw how there are strong trends in the data which should be simple to model using statistical learning methods.
+
 
 
 \cite{projectdata} have used the same dataset, and created online estimators using bayesian methods. By using the activity of different cells, they were able to use the data to update a prior belief (the likelihood of different head directions) and create good posterior distributions. Their experiments also showed similar activity during sleep. This appears to be a working proof-of-concept, indicating it is in fact possible to predict head direction from neural activity.

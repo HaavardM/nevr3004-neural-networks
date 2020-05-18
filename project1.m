@@ -129,6 +129,15 @@ name = "Mouse 28: " + name + sprintf(" (%s)", brain_area_28(grp));
 plotTuning(x, firing_rate_28(:, C28_T4C11), mutual_info_28(C28_T4C11), name);
 print("report/project1/figs/weird_mutual", "-depsc");
 
+figure(6);
+for i = 1:size(firing_rate_12, 2)
+   if mutual_info_12(i) > 0.5
+   y = firing_rate_12(:, i);
+   y = y / max(y);
+   hold on; plot(x, y);
+   end
+end
+
 function plotTuning(x,y, mut_info, cell_name)
    plot(x, y);
    name = cell_name;
