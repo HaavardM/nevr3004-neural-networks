@@ -44,4 +44,5 @@ function scores = task2(filename)
     xlabel(sprintf("PC1 (%.2f %%)", explained(1)));
     ylabel(sprintf("PC2 (%.2f %%)", explained(2)));
     title(filename(1:find(filename == '-')-1));
+    print(sprintf("report/project1/figs/%s/pca", filename), "-depsc");
 end

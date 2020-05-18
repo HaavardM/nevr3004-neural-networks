@@ -38,11 +38,7 @@ where $S_i$ is the number of spikes in timestep $i$, $\theta_t$ is the head angl
 \subsection{Mutual information}
 Mutual information can be used to quantify how much knowing the state of one variable can tell us about another, i.e. how much information is shared between the variables.
 The amount of information is quantified as bits (or Shannons), and originates from information theory. A bit can be thought of as the answer to a yes/no question. 
-The mutual information score can be calculated using 
-\begin{equation} \label{eq:mutinfo_cont}
-    I = \int_x \lambda(x) \log_2{\frac{\lambda(x)}{\lambda}}p(x) dx
-\end{equation}
-It can be approximated using the mutual information formula for discrete random variables
+The mutual information can be calculated using 
 \begin{equation}\label{eq:mutual_info}
     I(X;Y) = \sum_{i, j} Pr(y_i,x_j) \log_2(\frac{Pr(y_i, x_j)}{Pr(y_i)Pr(x_j)}) = \sum_{i,j}Pr(y_i|x_j)Pr(x_j) \log_2(\frac{Pr(y_i | x_j)Pr(x_j)}{Pr(y_i)Pr(x_j)})
 \end{equation}
@@ -55,15 +51,22 @@ By inserting \cref{eq:probs} into \cref{eq:mutual_info} it can be shown that the
 \begin{equation} \label{eq:mutinfo_disc}
     I \approx \Delta t \sum_k \lambda_k \log_2(\frac{\lambda_k}{\lambda})Pr(X = k)
 \end{equation}
+It can be rewritted to compute the mutual information per unit time, which may be easier to interpret.
+\begin{equation} \label{eq:mutinfo_disc_per_time}
+    \frac{I}{\Delta t} \approx \sum_k \lambda_k \log_2(\frac{\lambda_k}{\lambda})Pr(X = k)
+\end{equation}
 The prior distribution of head angles can be estimated by
 \begin{equation}
     \hat{Pr}(X = k) = \frac{\sum_i 1}{N}  \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
 \end{equation}
 i.e. the proportion of samples corresponding to bin $k$.
 
+Due to the approxions, \cref{eq:mutinfo_disc_per_time} may lead to slight negative values. Any values below zero is therefore considered to be approximation errors, and is manually forced to zero.
+
 \subsection{Principal Component Analysis}
-To reduce the feature space from many potentially unimportant variables to only a few important ones, principal analysis can be used. 
-The goal of PCA is to create new variables from linear transformations of the original variables (i.e. creating a new basis). More specifically the goal is to create new variables which describe as much of the variance in the original data as possible, with as few variables as possible. 
-The amount of variance explained by each variable is sorted descendingly with the first principal component explains the most. MATLAB can be used to perform PCA analysis by giving it a $NxP$ matrix where $N$ is the number of samples and $P$ is the number of features. The output PCA \texttt{scores} contains the original samples represented by the new basis.  
+To reduce the feature space from many potentially unimportant variables to only a few important ones, principal analysis can be used.
+The goal of PCA is to create new variables from linear transformations of the original variables by creating a new basis for the vector space. More specifically the goal is to create new variables which describe as much of the variance in the original data as possible, with as few variables as possible. 
+The amount of variance explained by each variable is sorted descendingly with the first principal component explains the most, and where each new variables are orthogonal to the rest. MATLAB can be used to perform PCA analysis by giving it a $NxP$ matrix where $N$ is the number of samples and $P$ is the number of features. The output PCA \texttt{scores} contains the original samples represented by the new basis.  
+PCA can only apply linear transformations, and therefore requires the data to be linear to produce meaningful results.
 A color coded scatter plot can be generated from the first few principal components. 
 

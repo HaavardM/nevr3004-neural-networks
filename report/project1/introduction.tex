@@ -1,5 +1,12 @@
 \section{Introduction}
-Sensor fusion is commonly used in robotics and autonomous systems to fuse multiple sources of information (sensors) to create better estimates of a systems state. Any single source may only contains partial information and may only perform well in a few scenarios. However, with enough sources we might still be able to create solid estimates by updating a common belief.  
-By considering neurons in the brain as sources of information, the brain may be thought of as a large scale sensor fusion system.
+Any single neuron only contain very little information, but networks of many interconnected neruons can represent complex information. Head direction cells (HD) in the brains of mice are no exception, and by combining small pieces of information from each neuron it is possible to reconstruct the head direction of mice.
 
-The aim of this paper is to investigate whether it is possible to predict head direction of a mouse by considering the spike-train of different cells in the brain, and see how well a sensor fusion framework may explain how multiple cells can be combined to create one head direction estimate. 
+Estimating the true head direction may be compared to the work of a detective in the CSI shows on television. The detectives are rarely able to find the suspect after collecting one single piece of evidence, but usually need use multiple pieces to build a case. Each piece new piece of evidence may help answer simple yes/no questions, helping the detectives in their search. In the beginning all citizens could be a suspect, but the detectives can narrow the search as they collect more evidence. In the brain of mice, any single neuron can only tell whether the head direction is within a range or not, but by using multiple neurons as "evidence" the brain is able to create a good estimate of the current head direction.  
+
+Further it can be compared to sensor fusion, a well-known topic in robotics. Modern robots are able to combine multiple sensor inputs to create estimates about a robots current state, as well as of the surroundings. Similar to the detectives evidence, any single sensor may only contain partial clues about the current state of the robot. By combining multiple sources we may still be able to predict the full state of a system. It all depends on what information we gain from getting input from each sensor, and if the the data is good enough to create good predictions.
+
+By investigating the information in a set of HD cells, we will try to understand how the information is distributed. 
+We will also analyze whether a change of basis in the data may help us visualize patterns in the data. While considering each neuron independently during data collection is natural, it may not be the best option when analyzing the data later on. We will try to create a new basis using PCA and simplify data analysis to further understand the relation between HD cells and head direction.
+
+The aim of this paper is to investigate the information hidden in HD cells, and to understand how it is possible to predict the head direction by observing the neural activity.
+

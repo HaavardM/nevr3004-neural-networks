@@ -1,9 +1,6 @@
 \section{Results}
-To test which of the neurons are reacting to the head direction, tuning curves were created from \cref{eq:firing_rate}. The tuning curves show how the mean firing rate varies with stimulus, and give a good indication of which cells contains information about the head direction and which do not. \cref{fig:1a_two_tuning_curves} are examples of two very different tuning curves which shows how much the response varies for different cells. 
-In \cref{fig:1b_convincing_tuning} there are tuning curves from two cells in each session, and it shows how there appears to be a clear reaction to certian stimuli for some of the cells.
 
-To quantify the amount of information the spike-train of a cell contains about the head direction, the mutual information was calculated using \cref{eq:mutinfo_disc}. The information is quantified as bits per unit time, and tells us the number of bits of information we expect to get during a short period of time for a given cell. \cref{fig:1b_convincing_tuning} also includes the corresponding mutual information for two different cells.
-
+\subsection{Convincing tuning curves}
 \begin{figure}
     \centering
     \begin{subfigure}[b]{0.4\textwidth}
@@ -14,14 +11,61 @@ To quantify the amount of information the spike-train of a cell contains about t
     \begin{subfigure}[b]{0.4\textwidth}
         \includegraphics[width=\textwidth]{figs/Mouse12-120806_awakedata.mat/T2C2.eps}
         \caption{Cell with unconvincing tuning curve, and the stimuli appears to be uncorrelated with the response.}
+        \label{fig:1a_low_mut_info}
     \end{subfigure}
     \caption{Two cells from mouse 12 with different tuning curves}
     \label{fig:1a_two_tuning_curves}
 \end{figure}
+To understand how different cells reacts to different stimuli, we created tuning curves from \cref{eq:firing_rate}. Some of the cells showed very convincing tuning properties with strong peaks for specific stimuli with little background, such as in \cref{sub@fig:1a_high_mut_info}. Others appears to mostly be noise, and does not appear to contain much information such as shown in \cref{fig:1a_low_mut_info}. 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.8]{figs/1b.eps}
     \caption{Promising tuning curves from two different mice and different brain areas. }
     \label{fig:1b_convincing_tuning}
+\end{figure} 
+In \cref{fig:1b_convincing_tuning} there are 4 different neurons from different mice and brain areas, with different convincing tuning properties. Neuron T4C14 also showes how the tuning curve may wrap around when the stimuli goes beyond $360^\circ$, as expected when using rotation as stimuli. Most of the neurons appears to have unique tuning properties, and tend to prefer different stimulus. By combining multiple neurons it appears to be possible to at least perform an edjucated guess about the current head direction by knowing the activitity in different HD cells.
+\subsection{Peculiar tuning properties}
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.8]{figs/peculiar_tuning.eps}
+    \caption{Cell with peculiar tuning properties. Notice how the cells have multiple firing patterns.}
+    \label{fig:peculiar_tuning}
+\end{figure}
+Some cells also had more peculiar tuning properties with multiple firing patterns. \cref{fig:peculiar_tuning} shows three cells with multiple firing patterns, but which still appears to contain useful information about head direction. These cells may not indicate one specific head angle, but by knowing when these cells are active we can still use the information to rule out other possibilites and shape the distribution of possible head directions.
+
+\subsection{Mutual information}
+To quantify the amount of information about head direction for each cell, the mutual information score were calculated using \cref{eq:mutinfo_disc}. Each of the plots include the mutual information score in the title, and from \cref{fig:1a_two_tuning_curves} we can see how the mutual information tend to be higher for the more convincing tuning properties. The mutual information score is in bits (shannons) per unit time, and can the thought of as how many yes/no answers during a short period of time we can answer knwoing the activity of a cell.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figs/weird_mutual.eps}
+        \caption{Convincing tuning curves with low mutual information}
+        \label{fig:weird_mutual}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figs/probs.eps}
+        \caption{Prior probability distribution}
+        \label{fig:probs}
+    \end{subfigure}
 \end{figure}
 
+However, low mutual information score does however not imply that the tuning curve is bad. In \cref{fig:weird_mutual} there are three tuning curves which looks convincing, but which results in a low mutual information score. By also looking at the prior probability density function, we can see how these tuning curves have their peak in a head direction which was less visited by the mice. The prior indicate what we believe the head angle distribution is before observing any cell activity. When observing cell activity which contradicts our prior belief (i.e. high activity in cells which triggers at an unlikely head direction), we simply need more information to "accept it". Observing high activity in these neruons contradicts our prior belief and would make us more uncertain about what the true head direction really is. 
+
+\subsection{Principal component analysis}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{figs/Mouse12-120806_awakedata.mat/pca.eps}
+        \caption{PCA for mouse 12}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\textwidth}
+        \includegraphics[width=\textwidth]{figs/Mouse28-140313_awakedata.mat/pca.eps}
+        \caption{PCA for mouse 28}
+
+    \end{subfigure}
+    \caption{Principal components analysis for the two datasets. The two first principal components are visualized. The plots clearly shows similar stimuli clustering together.}
+    \label{fig:pca}
+\end{figure}
+To better visualize and utilize the data, PCA analysis were used to reduce the number of variables, while still keep as much information as possible. In \cref{fig:pca} the resulting plot of the two first principal components are shown. The plots clearly shows how the different stimuli is grouped by color, and there appears to be very little noise in the color.
+It also appears to be a slight trend, where the colour appears to get brighter with a clockwise motion. We suspect it should be possible to fit a curve which should be able to parametrize the head direction (color) rather well, and could be used to predict the current head angle of the mice using only two principal components. 
