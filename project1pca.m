@@ -48,7 +48,6 @@ function scores = task2(filename)
     ylabel(sprintf("PC2 (%.2f %%)", explained(2)));
     sgtitle(filename(1:find(filename == '-')-1));
     title("Cartesian");
-    print(sprintf("report/project1/figs/%s/pca", filename), "-depsc");
     t = score(:, 1:2);
     t = t - mean(t, 1);
     [theta, rho] = cart2pol(t(:, 1), t(:,2));
@@ -61,4 +60,5 @@ function scores = task2(filename)
     colormap(parula(20))
     c = colorbar;
     c.Label.String = "Head angle [\circ]";
+    print(sprintf("report/project1/figs/%s/pca", filename), "-depsc");
 end
