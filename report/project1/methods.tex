@@ -7,7 +7,7 @@ Silicon probes were mounted on movable drives for recording of neural activity i
 The head directions (HD) were tracked using two light-emitting-diodes (LEDs) mounted to the back of the head and recored using a videocamera with a frame rate of 30fps. The data was then resampled to 39Hz by the aquisition system \cite{projectdata}.
 Data from two mice were explored, mouse 12 with probes only in the anteriour thalamus and mouse 28 with additional probes in the PoS. Only the awake dataset where used.
 \subsection{Tuning curves}
-The electrode spikes can be encoded as timestamps synchronized with the tracked head direction. The timestamps is binned into timebins with a time resolution of 
+The electrode spikes can be encoded as timestamps synchronized with the tracked head direction. The timestamps are binned into timebins with a time resolution of 
 $$\Delta t = \frac{1}{39Hz} \approx 25.64ms$$ 
 corresponding to the sampling frequency of $39$Hz set by the aquisition system.
 Each bin corresponds to the number of cell firings over a period of $\Delta t$ time, and each sample has a corresponding head angle.
@@ -19,7 +19,7 @@ $\theta \in [0, 2\pi)$
 \begin{equation}
 \theta_k \in \{\frac{2 \pi k}{N_{HD}}| k \in \mathbb{N}, 0 \leq k \leq N_{HD} \}
 \end{equation}
-and each tracked head direction sample is binned according to the rule
+and each tracked head direction sample is binned using the rule
 \begin{equation}
     f_{\theta}(\theta) =  \begin{cases}
         \theta_0, & \text{if } \theta_0 \leq \theta < \theta_{1} \\
@@ -65,7 +65,11 @@ Due to the approximations, \cref{eq:mutinfo_disc_per_time} may lead to slight ne
 
 \subsection{Principal Component Analysis}
 To reduce the feature space from many potentially unimportant variables to only a few important ones, principal analysis can be used.
-The goal of PCA is to create new variables from linear transformations of the original variables by creating a new basis for the vector space. More specifically the goal is to create new variables which describe as much of the variance in the original data as possible.
-The amount of variance explained by each variable is sorted descendingly with the first principal component explaining the most, and where each new variables are orthogonal to the rest. MATLAB can be used to perform PCA analysis by giving it a $NxP$ matrix where $N$ is the number of samples and $P$ is the number of features. The output PCA \texttt{scores} contains the original samples represented by the new basis.  
+The goal of PCA is to create new variables using linear transformations of the original variables, creating a new basis for the vector space. More specifically the goal is to create new variables which describe as much of the variance in the original data as possible.
+The amount of variance explained by each variable is sorted descendingly with the first principal component explaining the most, and where each new variables are orthogonal to the rest. MATLAB can be used to perform PCA analysis using the \texttt{pca} command by providing a $NxP$ matrix where $N$ is the number of samples and $P$ is the number of features. The output PCA \texttt{scores} contains the original samples represented by the new basis.  
 A color coded scatter plot can be generated from the first few principal components. 
+
+\subsection{Polar coordinates}
+Polar coordinates can be used to represent cartesian datapoints as a rotation and a distance. If the samples are  distributed around a circle, this can help visualize the samples in a linear space of rotations. The MATLAB function \texttt{cart2pol} can be used to transform from cartesian to polar coordinates.
+
 

@@ -7,6 +7,8 @@ task2('Mouse28-140313_awakedata.mat');
 
 
 
+
+
 function scores = task2(filename)
     load(filename)
     % first and last timestamp
@@ -37,12 +39,26 @@ function scores = task2(filename)
     selectedSpikesStandardized = (selectedSpikesSmooth - mean(selectedSpikesSmooth, 2)) ./ std(selectedSpikesSmooth,0, 2);
     [~, score, ~, ~, explained] = pca(selectedSpikesStandardized');
     scores = score(:, 1:2)';
+    subplot(2,1,1);
     scatter(score(:, 1), score(:,2), 5, rad2deg(headangle), 'filled');
     colormap(parula(20))
     c = colorbar;
     c.Label.String = "Head angle [\circ]";
     xlabel(sprintf("PC1 (%.2f %%)", explained(1)));
     ylabel(sprintf("PC2 (%.2f %%)", explained(2)));
-    title(filename(1:find(filename == '-')-1));
+    sgtitle(filename(1:find(filename == '-')-1));
+    title("Cartesian");
+    t = score(:, 1:2);
+    t = t - mean(t, 1);
+    [theta, rho] = cart2pol(t(:, 1), t(:,2));
+    subplot(2,1,2);
+    scatter(theta, rho, 5, rad2deg(headangle), 'filled');
+    xlabel('\theta [rad]');
+    ylabel('\rho');
+    xlim([-pi, pi]);
+    title('Polar coordinates');
+    colormap(parula(20))
+    c = colorbar;
+    c.Label.String = "Head angle [\circ]";
     print(sprintf("report/project1/figs/%s/pca", filename), "-depsc");
 end
