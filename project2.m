@@ -50,7 +50,7 @@ for i = 1:size(R, 2)
     W = W + R(:, i)*R(:, i)';
 end
 T = 4000;
-[M, H, S] = runSim([V, V_noise, U, U_noise], repmat(W, 1, 1, 12), [V, V, U, U], T);
+[M, H, S, E] = runSim([V, V_noise, U, U_noise], repmat(W, 1, 1, 12), [V, V, U, U], T);
 subplot(2,3,1);
 displayImage(V);
 title('Original #1');
@@ -96,6 +96,13 @@ plot(1:T, M);
 l = legend('#1', '#1 with noise', '#2', '#2 with loss');
 l.Location = 'southeast';
 print('report/project2/figs/qr-code-sim', '-depsc');
+figure(6);
+plot(1:T, E);
+xlabel("Iterations");
+ylabel("Energy");
+title("Energy function for Hopfield network");
+legend('#1', '#1 with noise', '#2', '#2 with loss');
+print('report/project2/figs/qr-code-energy', '-depsc');
 
 
 
@@ -129,20 +136,26 @@ function displayImage(I)
     colormap(gray);
 end
 
-function [M, H, S] = runSim(S, W, V, T)
+function [M, H, S, E] = runSim(S, W, V, T)
     P = size(V, 2);
     N = size(S, 1);
     M = zeros(T, P);
     H = zeros(N, P);
+    E = zeros(T, P);
     for p = 1:P
         for t = 1:T
             W_t = W(:, :, p);
             W_t(1:N+1:end) = 0;
-            
+            E(t, p) = energy(S(:, p), W_t);
             M(t, p) = S(:, p)' * V(:,p)  / N;
             H(:, p) = W_t * S(:, p);
             n = randi(N, 1);
             S(n, p) = sign(H(n, p));
         end
     end
+end
+
+function V = energy(S, W)
+    x = ones(numel(S), 1);
+    V = (-1/2) * x'* (W.*(S*S'))*x;
 end
