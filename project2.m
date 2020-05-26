@@ -5,7 +5,7 @@ mkdir('report/project2/figs');
 
 N = 500;
 S = zeros(N,1);
-noise = 0.7;
+noise = 0.9;
 V = rand(N,1);
 V(V >= 0.5) = 1;V(V < 0.5) = -1;
 % Create matrix with w_ij = (v_i*v_j/N)
@@ -34,31 +34,66 @@ M = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), repmat(U, 1, 4), T);
 figure(3);
 plot(1:T, M);
 legend('V', 'V_{noise}', 'U', 'U_{noise}');
-%The overlap deivates away from zero
 
-I = loadQRFromPng('qr-code.png');
+% QR-codes
+qr_fig = figure(4);
+I = loadQRPatternFromPng('qr-code.png');
 V = I(:);
-V_noise = patternWithNoise(V, noise);
-W = V*V';
+I = loadQRPatternFromPng('qr-code-2.png');
+U = I(:);
+V_noise = patternWithNoise(V, 0.8);
+U_noise = U;
+U_noise(end/2:end) = 1;
+R = rand(size(V,1), 1);
+W = V*V' + U*U';
+for i = 1:size(R, 2)
+    W = W + R(:, i)*R(:, i)';
+end
 T = 4000;
-[M, H, S] = runSim([V, V_noise], repmat(W, 1, 1, 2), [V, V], T);
-figure(4);
-subplot(1,3,1);
+[M, H, S] = runSim([V, V_noise, U, U_noise], repmat(W, 1, 1, 12), [V, V, U, U], T);
+subplot(2,3,1);
 displayImage(V);
-title('Original');
+title('Original #1');
 axis image;
-subplot(1,3,2);
+subplot(2,3,2);
 displayImage(V_noise);
 title(sprintf('With %.0f %% noise', noise * 100));
 axis image;
-subplot(1, 3, 3);
+subplot(2, 3, 3);
 displayImage(S(:, 2));
 title(["Reconstructed", "by Hopfield network"]);
 axis image;
-print('report/project2/figs/qr-code', '-depsc');
+subplot(2,3,4);
+displayImage(U);
+title('Original #2');
+axis image;
+subplot(2,3,5);
+displayImage(U_noise);
+title(sprintf('After loosing half', noise * 100));
+axis image;
+subplot(2, 3, 6);
+displayImage(S(:, 4));
+title(["Reconstructed", "by Hopfield network"]);
+axis image;
+% Create arrow
+annotation('arrow',[0.63 0.68],...
+    [0.75 0.75]);
+
+% Create arrow
+annotation('arrow',[0.35 0.4],...
+    [0.75 0.75]);
+
+% Create arrow
+annotation('arrow',[0.35 0.4],...
+    [0.275 0.275]);
+
+% Create arrow
+annotation('arrow',[0.63 0.68],...
+    [0.275 0.275]);
+saveas(qr_fig, 'report/project2/figs/qr-code.eps');
 figure(5);
 plot(1:T, M);
-l = legend('V', 'V_{noise}');
+l = legend('#1', '#1 with noise', '#2', '#2 with loss');
 l.Location = 'southeast';
 print('report/project2/figs/qr-code-sim', '-depsc');
 
@@ -72,7 +107,7 @@ function [V_noise] = patternWithNoise(V, p)
     V_noise(V_noise >= 0.5) = 1; V_noise(V_noise < 0.5) = -1;
 end
 
-function I = loadQRFromPng(filename)
+function I = loadQRPatternFromPng(filename)
     I = rgb2gray(imread(filename));
     I = I(any(I == 0, 2), :);
     I = I(:, any(I == 0, 1));
