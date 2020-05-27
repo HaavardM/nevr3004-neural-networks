@@ -1,1 +1,29 @@
 \section{Method}
+
+\subsection{The Hopfield Network}
+The Hopfield Network is a simple fully-connected neural network, i.e. all neurons are connected to eachother. Each neuron is either on (firing) or off (not firing) encoded as positive and negative values
+$$s_i \in \{1, -1\}$$ where $s_i$ is the state of neuron $i$.
+The connection between two seperate neurons is weighted, and there are no self-connections. The weight matrix can be initialized to store different memories 
+\begin{align}
+    \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T 
+\end{align} where $\mathbf{V^{(m)}}$ is a column vector storing the pattern for memory $m$.
+Each element in the weight matrix then corresponds to
+\begin{equation}
+    w_{ij} = \begin{cases}
+        \sum_{m=1}^M v_{i}^{(m)} v_{j}^{(m)} & \forall i \neq j \\
+        0 & \forall i = j
+    \end{cases}
+\end{equation}
+The network states can then be updated by using the update rule
+\begin{align}
+    s_i &= sign(h_i) & h_i = \sum_{j} w_{ij} s_j \iff \mathbf{H} = \mathbf{W} \mathbf{S}
+\end{align}
+The neurons can either be updated using an asynchronous or synchronous approach. With asynchronous updating, the neurons are updated in random order at different times, while with syncrhonous updating they are updated all at once. To mimick biological systems, we use asynchronous updating.
+
+\subsection{Simulating the Hopfield network}
+The Hopfield network was implemented and simulated in MATLAB.
+
+\subsection{Creating patterns from QR codes}
+
+
+

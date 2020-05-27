@@ -5,7 +5,7 @@ mkdir('report/project2/figs');
 
 N = 500;
 S = zeros(N,1);
-noise = 0.9;
+noise = 0.2;
 V = rand(N,1);
 V(V >= 0.5) = 1;V(V < 0.5) = -1;
 % Create matrix with w_ij = (v_i*v_j/N)
@@ -16,32 +16,52 @@ W = V * V' / N;
 % Task 1
 T = 1000;
 M = runSim(V, W, V, T);
-figure(1);
+fig1 = figure(1);
 plot(1:T, M); %The network is stable
-
+xlabel('Iterations');
+ylabel('Similarity');
+title(["Stability of network", "with perfect initialization"]);
+saveas(fig1, "report/project2/figs/stable.eps", "epsc");
 % Task 2
 V_noise = patternWithNoise(V, noise);
 M = runSim(V_noise,W,V,T);
-figure(2);
+fig2 = figure(2);
 plot(1:T, M); %The network is stable, and "reconstructs" the original pattern
+xlabel('Iterations');
+ylabel('Similarity');
+title(["Stability of network", "with noisy initialization"]);
 
-% Task 3
+saveas(fig2, "report/project2/figs/stable-with-noise.eps", "epsc");
+
+%% Task 3
 U = rand(N, 1);
 U(U >= 0.5) = 1; U(U < 0.5) = -1;
 U_noise = patternWithNoise(U, noise);
-W = V*V' + U*U';
-M = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), repmat(U, 1, 4), T);
-figure(3);
+W = (V*V' + U*U') / N;
+[M, H, S, E] = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), [V, V, U, U], T);
+fig3 = figure(3);
 plot(1:T, M);
-legend('V', 'V_{noise}', 'U', 'U_{noise}');
-
-% QR-codes
-qr_fig = figure(4);
+xlabel('Iterations');
+ylabel('Similarity');
+title('Multiple patterns');
+l = legend('V vs V', 'V_{noise} vs V', 'U vs U', 'U_{noise} vs U');
+l.Location = 'southeast';
+saveas(fig3, "report/project2/figs/multiple-patterns.eps", "epsc");
+fig4 = figure(4);
+plot(1:T, E);
+xlabel('Iterations');
+ylabel('Energy');
+title('Network energy');
+legend("V", "V_{noise}", "U", "U_{noise}");
+saveas(fig4, "report/project2/figs/multiple-patterns-energy.eps", "epsc");
+%% QR-codes
+noise = 0.9;
+fig5 = figure(5);
 I = loadQRPatternFromPng('qr-code.png');
 V = I(:);
-I = loadQRPatternFromPng('qr-code-2.png');
+[I, N] = loadQRPatternFromPng('qr-code-2.png');
 U = I(:);
-V_noise = patternWithNoise(V, 0.8);
+V_noise = patternWithNoise(V, noise);
 U_noise = U;
 U_noise(end/2:end) = 1;
 R = rand(size(V,1), 1);
@@ -53,7 +73,7 @@ T = 4000;
 [M, H, S, E] = runSim([V, V_noise, U, U_noise], repmat(W, 1, 1, 12), [V, V, U, U], T);
 subplot(2,3,1);
 displayImage(V);
-title('Original #1');
+title('Original QR#1');
 axis image;
 subplot(2,3,2);
 displayImage(V_noise);
@@ -65,11 +85,11 @@ title(["Reconstructed", "by Hopfield network"]);
 axis image;
 subplot(2,3,4);
 displayImage(U);
-title('Original #2');
+title('Original QR#2');
 axis image;
 subplot(2,3,5);
 displayImage(U_noise);
-title(sprintf('After loosing half', noise * 100));
+title('After loosing half');
 axis image;
 subplot(2, 3, 6);
 displayImage(S(:, 4));
@@ -90,19 +110,23 @@ annotation('arrow',[0.35 0.4],...
 % Create arrow
 annotation('arrow',[0.63 0.68],...
     [0.275 0.275]);
-saveas(qr_fig, 'report/project2/figs/qr-code.eps');
-figure(5);
+saveas(fig5, 'report/project2/figs/qr-code.eps', "epsc");
+fig6 = figure(6);
 plot(1:T, M);
-l = legend('#1', '#1 with noise', '#2', '#2 with loss');
+l = legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
 l.Location = 'southeast';
-print('report/project2/figs/qr-code-sim', '-depsc');
-figure(6);
+xlabel('Iterations');
+ylabel('Similarity');
+title("Stability of network");
+saveas(fig6, 'report/project2/figs/qr-code-sim.eps', "epsc");
+
+fig7 = figure(7);
 plot(1:T, E);
 xlabel("Iterations");
 ylabel("Energy");
 title("Energy function for Hopfield network");
-legend('#1', '#1 with noise', '#2', '#2 with loss');
-print('report/project2/figs/qr-code-energy', '-depsc');
+legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
+saveas(fig7, 'report/project2/figs/qr-code-energy.eps', "epsc");
 
 
 
@@ -114,14 +138,14 @@ function [V_noise] = patternWithNoise(V, p)
     V_noise(V_noise >= 0.5) = 1; V_noise(V_noise < 0.5) = -1;
 end
 
-function I = loadQRPatternFromPng(filename)
+function [I, N] = loadQRPatternFromPng(filename)
     I = rgb2gray(imread(filename));
     I = I(any(I == 0, 2), :);
     I = I(:, any(I == 0, 1));
     I = double(I);
     I(I < 50) = -1; 
     I(I > 50) = 1;
-    
+    N = numel(I);
 end
 
 function displayImage(I)
