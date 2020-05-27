@@ -29,7 +29,7 @@ and each tracked head direction sample is binned using the rule
     \end{cases} \quad \text{for} \quad 0 \leq k < N_{HD}
 \end{equation}
 The number of cell firings were binned accordingly to create an overview of number of spikes per head angle.
-The firing rate can be found by dividing the number of spikes by the number of head direction samples for each bin.
+The firing rate can be found by dividing the sum of spikes for each head direction bin by the number of head direction samples in the same bin.
 \begin{equation} \label{eq:firing_rate}
     \lambda_k = \frac{\sum_i S_i}{\sum_i 1} \quad i \in \{t | t \in \mathbb{N}, 0 \leq t \leq N, f_\theta(\theta_t) = \theta_k\}
 \end{equation}
@@ -42,7 +42,7 @@ The mutual information can be calculated using
 \begin{equation}\label{eq:mutual_info}
     I(X;Y) = \sum_{i, j} Pr(y_i,x_j) \log_2(\frac{Pr(y_i, x_j)}{Pr(y_i)Pr(x_j)}) = \sum_{i,j}Pr(y_i|x_j)Pr(x_j) \log_2(\frac{Pr(y_i | x_j)Pr(x_j)}{Pr(y_i)Pr(x_j)})
 \end{equation}
-During a sufficiently short period of time $\Delta t$ the cell spikes can be thought of as a binary (bernouilly) variable, either spiking once or not at all. \cite{mutualinfo}
+During a sufficiently short period of time $\Delta t$ the cell spikes can be thought of as a binary (bernouilly) variable, either spiking once or not at all. \cite{mutualinfo} The probability of a cell spiking can be then be calculated using
 \begin{align} \label{eq:probs}
     Pr(S=1 | X = k) &= \lambda_k \Delta t & Pr(S=1) = \lambda \Delta t = \Delta t \sum_k \lambda_k
 \end{align}
@@ -61,7 +61,7 @@ The prior distribution of head angles can be estimated by
 \end{equation}
 i.e. the proportion of samples corresponding to bin $k$.
 
-Due to the approximations, \cref{eq:mutinfo_disc_per_time} may lead to slight negative values. Any values below zero is therefore considered to be approximation errors, and is manually forced to zero.
+Due to the approximations, \cref{eq:mutinfo_disc_per_time} may lead to slight negative values. Negative information does not contain any meaning and any values below zero is therefore considered to be approximation errors, and is manually forced to zero.
 
 \subsection{Principal Component Analysis}
 To reduce the feature space from many potentially unimportant variables to only a few important ones, principal analysis can be used.
