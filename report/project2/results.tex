@@ -1,0 +1,15 @@
+\section{Results}
+
+\subsection{Reconstructing partially lost QR codes from memory}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figs/qr-code}
+        \caption{The QR-code contains information encoded within the patterns. A QR decoding app, either online or on a smartphone, can be used to decode the "hidden" message. Using the hopfield network we are able to reconstruct a destroyed QR-code from memory.}
+    \end{subfigure}
+    \begin{subfigure}{0.49\textwidth}
+        \includegraphics[width=\textwidth]{figs/qr-code-sim}
+        \caption{The similarity between the current state of the network and the original QR-code.}
+    \end{subfigure}
+    \caption{By applying the Hopfield network to a very noisy QR-code we are able to reconstruct the original. By using any QR-code reader we are able to decode the left and right QR-codes, while the middle ones contains too much noise. The same hopfield network was used. The QR-code patterns were stored in addition to a third random pattern. }
+\end{figure}
