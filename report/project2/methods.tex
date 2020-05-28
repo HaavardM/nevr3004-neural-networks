@@ -9,12 +9,12 @@ The Hopfield Network is a simple fully-connected neural network, i.e. all neuron
 \end{tcolorbox}
 The connection between two seperate neurons is weighted, and there are no self-connections. The weight matrix $\bf W$ can be initialized to store $M$ different patterns $\mathbf{V}^{(m)} \in \{1, -1\}^{N\times 1}$ using \cref{eq:weights}.
 \begin{tcolorbox}[ams align] \label{eq:weights}
-    \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T 
+    \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T 
 \end{tcolorbox}
 Each element in the weight matrix then corresponds to
 \begin{equation*}
     w_{ij} = \begin{cases}
-        \sum_{m=1}^M v_{i}^{(m)} v_{j}^{(m)} & \forall i \neq j \\
+        \frac{1}{M}\sum_{m=1}^M v_{i}^{(m)} v_{j}^{(m)} & \forall i \neq j \\
         0 & \forall i = j
     \end{cases}
 \end{equation*}
@@ -24,8 +24,37 @@ The network states can then be updated by using the update rule in \cref{eq:upda
 \end{tcolorbox}
 The neurons can either be updated using an asynchronous or synchronous approach. With asynchronous updating, the neurons are updated in random order at different times, while with syncrhonous updating they are updated all at once. To mimick biological systems, we use asynchronous updating.
 
+\subsection{Energy of Hopfield Network}
+\begin{tcolorbox}
+    \begin{subequations}\label{eq:energy}
+        \begin{align}
+        E &= -\frac{1}{2} \sum_{i,j,m} w_{ij}s_i s_j \\
+        &= - \frac{1}{2} \mathbf{S}^T \mathbf{W} \mathbf{S} \\
+        &= -\frac{1}{2}( \mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - trace(\bar{\mathbf{W}})) \label{eq:energy-trace} \\ 
+        &= -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \label{eq:energy-compact}
+        \end{align}
+    \end{subequations}
+\end{tcolorbox}
+The third equality \cref{eq:energy-compact} is valid since 
+\begin{equation}
+    trace(\bar{\mathbf{W}}) = \mathbf{S}^T diag^{-1}(\bar{\mathbf{W}})\mathbf{S}
+\end{equation}
+The last equality, \cref{eq:energy}, comes from the fact the trace of $\bar{\mathbf{W}}$ (\cref{eq:weights}) is the sum of the diagonal elements, and the diagonal elements of $\bar{\mathbf{W}}$ are given by
+\begin{equation}
+    \bar{w}_{ii} = \frac{1}{M} \sum_{m=1}^M (v_i^{(m)})^2 \equiv 1
+\end{equation}
+The trace of $\bar{\mathbf{W}}$ is therefore given by 
+\begin{equation}
+    trace(\bar{\mathbf{W}}) = \sum_{n=1}^N 1 = N
+\end{equation}
+
+
 \subsection{Simulating the Hopfield network}
-The Hopfield network was implemented and simulated in MATLAB.
+The Hopfield network can be simulated using MATLAB and \crefrange{eq:states}{eq:energy}. The code is available in \cref{sec:matlab_code}.
+\subsubsection*{Stability of a single pattern}
+A single pattern can be simulated using $N=50$ neurons, and by storing a single (random generated) pattern $\mathbf{V}$. Two simulations were then used, one where the states $\bf S$ were initialized to the pattern $\bf V$ and one with $20\%$ noise.
+\subsubsection*{Stability of multiple patterns}
+Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern (4 in total), initializing the states with and without noise.
 
 \subsection{Creating patterns from QR codes}
 

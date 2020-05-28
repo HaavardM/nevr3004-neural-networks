@@ -13,6 +13,7 @@
     \end{subfigure}
     \caption{Initializing a Hopfield network with a single stored pattern will cause the network to converge towards the stored pattern.}
 \end{figure}
+To test whether the Hopfield network is indeed stable, we simulated a 
 
 \subsection{Storing multiple patterns}
 \begin{figure}[H]
@@ -40,4 +41,10 @@
         \caption{The similarity between the current state of the network and the original QR-code.}
     \end{subfigure}
     \caption{By applying the Hopfield network to a very noisy QR-code we are able to reconstruct the original. By using any QR-code reader we are able to decode the left and right QR-codes, while the middle ones contains too much noise. The same hopfield network was used. The QR-code patterns were stored in addition to a third random pattern. }
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=0.4\textwidth]{figs/qr-inverted}
+        \caption{The Hopfield network learns the patterns and the network is not able to distinguish between positive and negative values. The network is not only stable at the initial memories, but also when using the inverted patterns. This makes sense from a memory point of view, as we are able to distinguish objects purely based on patterns and shapes. An apple is an apple regardless of its color.}
 \end{figure}
