@@ -9,7 +9,7 @@ The Hopfield Network is a simple fully-connected neural network, i.e. all neuron
 \end{tcolorbox}
 The connection between two seperate neurons is weighted, and there are no self-connections. The weight matrix $\bf W$ can be initialized to store $M$ different patterns $\mathbf{V}^{(m)} \in \{1, -1\}^{N\times 1}$ using \cref{eq:weights}.
 \begin{tcolorbox}[ams align] \label{eq:weights}
-    \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T 
+    \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T \succeq 0 
 \end{tcolorbox}
 Each element in the weight matrix then corresponds to
 \begin{equation*}
@@ -30,7 +30,7 @@ The neurons can either be updated using an asynchronous or synchronous approach.
 \begin{tcolorbox}
     \begin{subequations}\label{eq:energy}
         \begin{align}
-        E &= -\frac{1}{2} \sum_{i,j,m} w_{ij}s_i s_j \\
+        E &= -\frac{1}{2} \sum_{i,j} w_{ij}s_i s_j \label{eq:energy-sum} \\
         &= - \frac{1}{2} \mathbf{S}^T \mathbf{W} \mathbf{S} \\
         &= -\frac{1}{2}( \mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - trace(\bar{\mathbf{W}})) \label{eq:energy-trace} \\ 
         &= -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \label{eq:energy-compact}
@@ -50,6 +50,25 @@ The trace of $\bar{\mathbf{W}}$ is therefore given by
     trace(\bar{\mathbf{W}}) = \sum_{n=1}^N 1 = N
 \end{equation}
 
+It is worth noticing $\bf \bar{W}$ is positive semi-definite and it can be showed using the definition of positive semi-definite matrices $\mathbf{z}^T \mathbf{A} \mathbf{z} \geq 0 \iff \mathbf{A} \succeq 0$.
+\begin{equation*}
+\mathbf{z}^T\bar{\mathbf{W}} \mathbf{z} = \frac{1}{M}\sum_{m=1}^M \mathbf{z}^T \mathbf{V}^{(m)}(\mathbf{V}^{(m)})^T \mathbf{z} = \frac{1}{M}\sum_{m=1}^M (\mathbf{z}^T \mathbf{V}^{(m)})^2 \geq 0 \implies \mathbf{\bar{W}} \succeq 0
+\end{equation*}
+Using \cref{eq:energy-compact} we can form upper and lower bounds for the energy. Using the fact $\mathbf{\bar{W}} \succeq 0 \iff \mathbf{S}^T \mathbf{\bar{W}}\mathbf{S} \geq 0$, we get the upper limit.
+\begin{equation*}
+    E = -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \leq \frac{N}{2}
+\end{equation*}
+For the lower limit we assume all the addends in \cref{eq:energy-sum} are $1$. With $N^2$ elements in the weight matrix and after removing the $N$ diagonal elements we get
+\begin{equation*}
+    E = -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \geq -\frac{1}{2} (N^2 - N) = -\frac{N}{2} (N-1) 
+\end{equation*}
+
+\begin{tcolorbox}
+    \begin{equation}\label{eq:energy-limits}
+        -\frac{N}{2}(N-1) \leq E \leq \frac{N}{2}
+    \end{equation}
+\end{tcolorbox}
+
 For each stored pattern in \cref{eq:weights} there is a corresponding local optimum in \cref{eq:energy}.
 Using the energy function \cref{eq:energy} as a Lyapunov candidate, the stability of the Hopfield network can be proved by showing the energy is strictly decreasing when using the update rule in \cref{eq:update} \cite{lyapnuv-stability}.
 
@@ -63,7 +82,7 @@ A single pattern can be simulated using $N=50$ neurons, and by storing a single 
 \subsubsection*{Stability of multiple patterns}
 Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern, initializing the states with and without noise.
 
-\subsubsection{Creating patterns from QR codes}
+\subsubsection*{Creating patterns from QR codes}
 QR codes were generated using \href{https://miniwebtool.com/qr-code-generator/}{an online QR-code generator}, and resulted in $50 \times 50$ PNG images. The QR-codes were loaded in MATLAB, stripped for any white borders, converted from grayscale values to binary and encoded as a $\{1, -1\}^{N \times 1}$ vector. Two QR codes were generated and stored in the Hopfield network using \cref{eq:weights}. The first simulation was initialized to the first QR-code with large amount of noise. The second simulation was initialized to the second QR-code with half of the bits forced to 1 (i.e. losing half of the pattern). The number of iterations was increased due to the large amount of neurons.
 
 
