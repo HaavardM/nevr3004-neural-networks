@@ -18,11 +18,13 @@ Each element in the weight matrix then corresponds to
         0 & \forall i = j
     \end{cases}
 \end{equation*}
+The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicate they should be pushed away from eachother. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling depend on the state of the spring.
+
 The network states can then be updated by using the update rule in \cref{eq:update}. 
 \begin{tcolorbox}[ams align]\label{eq:update}
     s_i &= sign(h_i) & h_i = \sum_{j=1}^N w_{ij} s_j \iff \mathbf{H} = \mathbf{W} \mathbf{S}
 \end{tcolorbox}
-The neurons can either be updated using an asynchronous or synchronous approach. With asynchronous updating, the neurons are updated in random order at different times, while with syncrhonous updating they are updated all at once. To mimick biological systems, we use asynchronous updating.
+The neurons can either be updated using an asynchronous or synchronous approach. With asynchronous updating, the neurons are updated in random order at different times, while with syncrhonous updating they are updated all at once. We utilized the asynchronous approach, and selected one neruon each timestep. The neurons were shuffled using a random permuation.
 
 \subsection{Energy of Hopfield Network}
 \begin{tcolorbox}
@@ -48,15 +50,22 @@ The trace of $\bar{\mathbf{W}}$ is therefore given by
     trace(\bar{\mathbf{W}}) = \sum_{n=1}^N 1 = N
 \end{equation}
 
+For each stored pattern in \cref{eq:weights} there is a corresponding local optimum in \cref{eq:energy}.
+Using the energy function \cref{eq:energy} as a Lyapunov candidate, the stability of the Hopfield network can be proved by showing the energy is strictly decreasing when using the update rule in \cref{eq:update} \cite{lyapnuv-stability}.
+
+
+
 
 \subsection{Simulating the Hopfield network}
 The Hopfield network can be simulated using MATLAB and \crefrange{eq:states}{eq:energy}. The code is available in \cref{sec:matlab_code}.
 \subsubsection*{Stability of a single pattern}
 A single pattern can be simulated using $N=50$ neurons, and by storing a single (random generated) pattern $\mathbf{V}$. Two simulations were then used, one where the states $\bf S$ were initialized to the pattern $\bf V$ and one with $20\%$ noise.
 \subsubsection*{Stability of multiple patterns}
-Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern (4 in total), initializing the states with and without noise.
+Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern, initializing the states with and without noise.
 
-\subsection{Creating patterns from QR codes}
+\subsubsection{Creating patterns from QR codes}
+QR codes were generated using \href{https://miniwebtool.com/qr-code-generator/}{an online QR-code generator}, and resulted in $50 \times 50$ PNG images. The QR-codes were loaded in MATLAB, stripped for any white borders, converted from grayscale values to binary and encoded as a $\{1, -1\}^{N \times 1}$ vector. Two QR codes were generated and stored in the Hopfield network using \cref{eq:weights}. The first simulation was initialized to the first QR-code with large amount of noise. The second simulation was initialized to the second QR-code with half of the bits forced to 1 (i.e. losing half of the pattern). The number of iterations was increased due to the large amount of neurons.
+
 
 
 

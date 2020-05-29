@@ -9,6 +9,8 @@ V = rand(N,1);
 V(V >= 0.5) = 1;V(V < 0.5) = -1;
 % Create matrix with w_ij = (v_i*v_j/N)
 W = V * V';
+figure(11);
+imagesc(20*log(abs(W)));
 % Reset diagonal elements to zero (no self connections)
 assert(energy(V, W) == energy2(V, W));
 
@@ -68,10 +70,7 @@ U_inv2 = U_inv;
 U_inv2(1:floor(end/3)) = -1* U_inv2(1:floor(end/3));
 R = rand(size(V,1), 1);
 W = V*V' + U*U';
-for i = 1:size(R, 2)
-    W = W + R(:, i)*R(:, i)';
-end
-W = W / 4; %M=4
+W = W / 2; %M=4
 T = 1000;
 [M, H, S, E] = runSim([V, V_noise, U, U_noise, U_inv, U_inv2], repmat(W, 1, 1, 6), [V, V, U, U, U, U], T);
 subplot(2,3,1);
