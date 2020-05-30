@@ -11,16 +11,16 @@ The connection between two seperate neurons is weighted, and there are no self-c
 \begin{tcolorbox}[ams align, title={Network Weights}] \label{eq:weights}
     \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T \succeq 0 
 \end{tcolorbox}
-Each element in the weight matrix then corresponds to
+Each element in the weight matrix then corresponds to \cite{hopfield}
 \begin{equation*}
     w_{ij} = \begin{cases}
         \frac{1}{M}\sum_{m=1}^M v_{i}^{(m)} v_{j}^{(m)} & \forall i \neq j \\
         0 & \forall i = j
     \end{cases}
 \end{equation*}
-The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicate they should be pushed away from each other. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling depend on the state of the spring.
+The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicate they should be pushed away from each other. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling dependent on the state of the spring.
 
-The network states can then be updated by using the update rule in \cref{eq:update}. 
+The network states can be updated by using the update rule in \cref{eq:update}. Intuitively we can think of the update step as all other neurons are either pulling or pushing the state of the neuron towards $1$ or $-1$.
 \begin{tcolorbox}[ams align, title={Update Step}]\label{eq:update}
     s_i &= sign(h_i) & h_i = \sum_{j=1}^N w_{ij} s_j \iff \mathbf{H} = \mathbf{W} \mathbf{S}
 \end{tcolorbox}

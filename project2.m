@@ -18,12 +18,12 @@ T = 100;
 fig1 = figure(1);
 V_noise = patternWithNoise(V, noise);
 [M, H, S, E] = runSim([V, V_noise],repmat(W, 1, 1, 2),[V, V],T);
-plot(1:T, M); %The network is stable, and "reconstructs" the original pattern
+plot(1:T, M*100); %The network is stable, and "reconstructs" the original pattern
 xlabel('Iterations');
-ylabel('Similarity');
+ylabel('Similarity [%]');
 title(["Stability of network", "with single pattern"]);
 legend('V vs V', 'V_{noise} vs V');
-ylim([-0.1 1.1]);
+ylim([-10 110]);
 
 saveas(fig1, "report/project2/figs/stable.eps", "epsc");
 fig2 = figure(2);
@@ -31,28 +31,32 @@ plot(1:T, E);
 legend('V vs V', 'V_{noise} vs V');
 xlabel('Iterations');
 ylabel('Energy');
+title(["Energy of network", "with single pattern"]);
 saveas(fig2, "report/project2/figs/stable-energy.eps", "epsc");
 
-%% Task 3
+% Task 3
 U = rand(N, 1);
+Y = rand(N, 1);
 U(U >= 0.5) = 1; U(U < 0.5) = -1;
+Y(Y >= 0.5) = 1; Y(Y < 0.5) = -1;
 U_noise = patternWithNoise(U, noise);
-W = (V*V' + U*U') / 2;
-[M, H, S, E] = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), [V, V, U, U], T);
+Y_noise = patternWithNoise(Y, noise);
+W = (V*V' + U*U' + Y*Y') / 3;
+[M, H, S, E] = runSim([V,V_noise, U, U_noise, Y, Y_noise], repmat(W, 1, 1, 6), [V, V, U, U, Y, Y_noise], T);
 fig3 = figure(3);
-plot(1:T, M);
+plot(1:T, M*100);
 xlabel('Iterations');
-ylabel('Similarity');
-title('Multiple patterns');
+ylabel('Similarity [%]');
+title({'Similarity', 'with multiple patterns'});
 l = legend('V vs V', 'V_{noise} vs V', 'U vs U', 'U_{noise} vs U');
 l.Location = 'southeast';
-ylim([-0.1 1.1]);
+ylim([-10 110]);
 saveas(fig3, "report/project2/figs/multiple-patterns.eps", "epsc");
 fig4 = figure(4);
 plot(1:T, E);
 xlabel('Iterations');
 ylabel('Energy');
-title('Network energy');
+title({'Energy of network', 'with multiple patterns'});
 legend("V", "V_{noise}", "U", "U_{noise}");
 saveas(fig4, "report/project2/figs/multiple-patterns-energy.eps", "epsc");
 %% QR-codes
@@ -114,12 +118,12 @@ annotation('arrow',[0.63 0.68],...
     [0.275 0.275]);
 saveas(fig5, 'report/project2/figs/qr-code.eps', "epsc");
 fig6 = figure(6);
-plot(1:T, M(:, 1:4));
+plot(1:T, M(:, 1:4)*100);
 l = legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
 l.Location = 'southeast';
 xlabel('Iterations');
-ylabel('Similarity');
-ylim([-0.1 1.1]);
+ylabel('Similarity [%]');
+ylim([-10 110]);
 title("Stability of network");
 saveas(fig6, 'report/project2/figs/qr-code-sim.eps', "epsc");
 
@@ -127,7 +131,7 @@ fig7 = figure(7);
 plot(1:T, E(:, 1:4));
 xlabel("Iterations");
 ylabel("Energy");
-title("Energy function for Hopfield network");
+title(["Energy of network", "with multiple QR-codes"]);
 legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
 saveas(fig7, 'report/project2/figs/qr-code-energy.eps', "epsc");
 

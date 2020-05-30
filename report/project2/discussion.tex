@@ -1,1 +1,14 @@
 \section{Discussion}
+
+From our theoretical and empirical results we are able to verify the stability properties of the Hopfield network. The network is able to restore multiple different patterns from partial inputs, and is stable in the equlibrium points. 
+
+When simulating with multiple uncorrelated patterns the networks energy lower limit from \cref{eq:energy-limits} appears to be divided equally between the two patterns. The energy limits may therefore not only be used prove the stability of the network, but can also be used to quantify the capacity (i.e. the number of memories the network can store). How the energy is distributed across the different memories does however depend on how similarity. We can think of memories with a lot in common as creating smaller valleys within a larger valley, and thereby sharing some potential energy. Intuitively we should therefore be able to store as many memories as we can create valleys using the finite amount of discrete energy in the network. 
+
+The energy may also be used to quantify the robustness of the network. By considering the amount of work needed (in a physical sense) to move the state of the network from one memory to another, we can create a quantitative measure for how robust the network is to random perturbations. If the energy difference between two memories is small, a few bits are enough to switch the equlibrium state between two memories. Storing too many memories (i.e. too many small valleys), or storing very similar patterns will therefore decrease the robustness.
+
+
+
+
+
+
+
