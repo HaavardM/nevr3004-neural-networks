@@ -1,14 +1,14 @@
 \section{Method}
 
 \subsection{The Hopfield Network}
-The Hopfield Network is a simple fully-connected neural network, i.e. all neurons are connected to eachother. Each neuron is either on (firing) or off (not firing) encoded as positive and negative values as showed in mathematical terms in \cref{eq:states}.
-\begin{tcolorbox}[ams equation] \label{eq:states}
+The Hopfield Network is a simple fully-connected neural network, i.e. all neurons are connected to eachother. It is a recurrent neural network popularized by John Hopfield in \cite{hopfield}. Each neuron is either on (firing) or off (not firing) encoded as positive or negative values as showed in mathematical terms in \cref{eq:states}.
+\begin{tcolorbox}[ams equation, title={Network States}] \label{eq:states}
     \mathbf{S} = \begin{bmatrix}
         s_1 \\ s_2 \\ \vdots \\ s_n
     \end{bmatrix}, \quad \mathbf{S} \in \{1, -1\}^{N\times1}
 \end{tcolorbox}
 The connection between two seperate neurons is weighted, and there are no self-connections. The weight matrix $\bf W$ can be initialized to store $M$ different patterns $\mathbf{V}^{(m)} \in \{1, -1\}^{N\times 1}$ using \cref{eq:weights}.
-\begin{tcolorbox}[ams align] \label{eq:weights}
+\begin{tcolorbox}[ams align, title={Network Weights}] \label{eq:weights}
     \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T \succeq 0 
 \end{tcolorbox}
 Each element in the weight matrix then corresponds to
@@ -21,13 +21,14 @@ Each element in the weight matrix then corresponds to
 The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicate they should be pushed away from eachother. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling depend on the state of the spring.
 
 The network states can then be updated by using the update rule in \cref{eq:update}. 
-\begin{tcolorbox}[ams align]\label{eq:update}
+\begin{tcolorbox}[ams align, title={Update Step}]\label{eq:update}
     s_i &= sign(h_i) & h_i = \sum_{j=1}^N w_{ij} s_j \iff \mathbf{H} = \mathbf{W} \mathbf{S}
 \end{tcolorbox}
 The neurons can either be updated using an asynchronous or synchronous approach. With asynchronous updating, the neurons are updated in random order at different times, while with syncrhonous updating they are updated all at once. We utilized the asynchronous approach, and selected one neruon each timestep. The neurons were shuffled using a random permuation.
 
 \subsection{Energy of Hopfield Network}
-\begin{tcolorbox}
+We can associate a number to each state of the network, which we refer to as the energy $E$ of the network.
+\begin{tcolorbox}[title={Energy contained in network}]
     \begin{subequations}\label{eq:energy}
         \begin{align}
         E &= -\frac{1}{2} \sum_{i,j} w_{ij}s_i s_j \label{eq:energy-sum} \\
@@ -63,7 +64,7 @@ For the lower limit we assume all the addends in \cref{eq:energy-sum} are $1$. W
     E = -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \geq -\frac{1}{2} (N^2 - N) = -\frac{N}{2} (N-1) 
 \end{equation*}
 
-\begin{tcolorbox}
+\begin{tcolorbox}[title={Energy Limits}]
     \begin{equation}\label{eq:energy-limits}
         -\frac{N}{2}(N-1) \leq E \leq \frac{N}{2}
     \end{equation}

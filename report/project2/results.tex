@@ -5,15 +5,16 @@
     \centering
     \begin{subfigure}{0.49\textwidth}
         \includegraphics[width=\textwidth]{figs/stable}
-        \caption{By initializing the network to the stored pattern, the network will remain in an equilibrium. The network will never deviate from this state without external interference.}
+        \caption{By initializing the network to the stored pattern, the network will remain in an equilibrium. The network will never deviate from this state without external interference.If the network is initialized to a noisy state, the network will converge towards the stored pattern.}
     \end{subfigure}
     \begin{subfigure}{0.49\textwidth}
-        \includegraphics[width=\textwidth]{figs/stable-with-noise}
-        \caption{If the network is initialized to a noisy state, the network will converge towards the stored pattern. }
+        \includegraphics[width=\textwidth]{figs/stable-energy}
+        \caption{With a single stored pattern, the energy will converge towards the lower limit according to \cref{eq:energy-limits}. In this case with 50 neurons, the lower limit os $-\frac{50*\times 49}{2} = -1225$}.
     \end{subfigure}
-    \caption{Initializing a Hopfield network with a single stored pattern will cause the network to converge towards the stored pattern.}
+    \caption{Initializing a Hopfield network with a single stored pattern ($N = 50$) will cause the network to converge towards the stored pattern.}
+    \label{fig:stable}
 \end{figure}
-To test whether the Hopfield network is indeed stable, we simulated a 
+To test whether the Hopfield network is stable after reaching an equilibrium we simulated the Hopfield network storing a random pattern using $N=50$ neurons. We initialized the network to the stored pattern, once with and once without noise added, as shown in \cref{fig:stable}. The network remains stable at the equilibrium point, and it will converge towards the equilibrium if not perfectly intialized. With a single pattern stored, the energy will converge toward the lower limit expressed in \cref{eq:energy-limits}.
 
 \subsection{Storing multiple patterns}
 \begin{figure}[H]
@@ -21,12 +22,17 @@ To test whether the Hopfield network is indeed stable, we simulated a
     \begin{subfigure}{0.49\textwidth}
         \includegraphics[width=\textwidth]{figs/multiple-patterns.eps}
         \caption{By initializing the weight matrix $\bf W$ with multiple patterns, the network is able to restore multiple different patterns. The amount of memories and noise the network is able to handle, depends on complex the pattern is (number of neurons) and how similar the patterns are. If two stored patterns only differ by one bit, the network may recall the wrong memory if noise is involved. }
+        \label{fig:multiple-similarity}
     \end{subfigure}
     \begin{subfigure}{0.49\textwidth}
         \includegraphics[width=\textwidth]{figs/multiple-patterns-energy.eps}
         \caption{The network will always move in the direction of least resistance such that the overall energy decrease, similar to how a ball always will roll downwards into a valley unless there are external forces interfering. Each stored memory corresponds to a local minimum which can be thought of as valleys, and as long as the network is initialized in the correct valley, it is able to reconstruct the state from memory.}
+        \label{fig:multiple-energy}
     \end{subfigure}
+    \caption{Simulating the Hopfield network with multiple stored patterns.}
+    \label{fig:multiple}
 \end{figure}
+To test whether the network remains stable even with multiple patterns stored, we simulated a new network storing two uncorrelated random patterns ($N=50$). We simulated using both patterns as initial conditions as well as simulating with and without noise. In total we ran 4 simulations and the results are shown in \cref{fig:multiple}. The states converged towards the correct pattern in all cases, and remains stable at the equilibrium. The energy in the equilibrium, as shown in \cref{fig:multiple-energy}, was half the networks lower limit in \cref{eq:energy}.
  
 
 \subsection{Reconstructing partially lost QR codes from memory} \label{sec:qr-codes}
@@ -47,7 +53,7 @@ To better visualize the Hopfield networks ability to store and restore patterns,
 \end{figure}
 
 \subsection{Inverting patterns}
-According to the weights, \cref{eq:weights}, the Hopfield network only stores patterns and not the actual values in the memories. A pattern $\bf V$ and its inverse $\bf \bar{V} = -1 \times \bf V$ would yield the exact same weight matrix. For each stored memory there should be two equilibrium states, one for $\bf V$ and one for $\bf \bar{V}$. To test wheter this truly was the case, we used the same Hopfield network as in \cref{sec:qr-codes} and initialized the states to the second QR code, but inverted. We ran another simulation using the QR-code with a two-thirds of its bits inverted. As can be seen from the results in \cref{fig:inverted-qr} both cases caused the Hopfield network to reconstruct the inverted pattern, and not the one we originally created. From \cref{eq:weights} this makes sense, since we only store whether two neurons should contain the same state or not. The Hopfield network only store what the state should be relative to others in the network.
+According to the weights, \cref{eq:weights}, the Hopfield network only stores patterns and not the actual values in the memories. A pattern $\bf V$ and its inverse $\bf \bar{V} = -1 \times \bf V$ would yield the exact same weight matrix. For each stored memory there should be two equilibrium states, one for $\bf V$ and one for $\bf \bar{V}$. To test wheter this truly was the case, we used the same Hopfield network as in \cref{sec:qr-codes} and initialized the states to the second QR code, but inverted. We ran another simulation using the QR-code with two-thirds of its bits inverted. As can be seen from the results in \cref{fig:inverted-qr} both cases caused the Hopfield network to reconstruct the inverted pattern, and not the one we originally created. From \cref{eq:weights} and \cref{eq:energy} this makes sense since we only store whether two neurons should be in the same state or not. In other words, the Hopfield network only store what the state of a neuron should be relative to the others in the network and not the actual values.
 \begin{figure}[H]
     \centering
         \includegraphics[width=0.4\textwidth]{figs/qr-inverted}

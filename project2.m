@@ -12,27 +12,26 @@ W = V * V';
 figure(11);
 imagesc(20*log(abs(W)));
 % Reset diagonal elements to zero (no self connections)
-assert(energy(V, W) == energy2(V, W));
 
 % Task 1
 T = 100;
-[M, H, S, E] = runSim(V, W, V, T);
 fig1 = figure(1);
-plot(1:T, M); %The network is stable
-xlabel('Iterations');
-ylabel('Similarity');
-title(["Stability of network", "with perfect initialization"]);
-saveas(fig1, "report/project2/figs/stable.eps", "epsc");
-% Task 2
 V_noise = patternWithNoise(V, noise);
-M = runSim(V_noise,W,V,T);
-fig2 = figure(2);
+[M, H, S, E] = runSim([V, V_noise],repmat(W, 1, 1, 2),[V, V],T);
 plot(1:T, M); %The network is stable, and "reconstructs" the original pattern
 xlabel('Iterations');
 ylabel('Similarity');
-title(["Stability of network", "with noisy initialization"]);
+title(["Stability of network", "with single pattern"]);
+legend('V vs V', 'V_{noise} vs V');
+ylim([-0.1 1.1]);
 
-saveas(fig2, "report/project2/figs/stable-with-noise.eps", "epsc");
+saveas(fig1, "report/project2/figs/stable.eps", "epsc");
+fig2 = figure(2);
+plot(1:T, E);
+legend('V vs V', 'V_{noise} vs V');
+xlabel('Iterations');
+ylabel('Energy');
+saveas(fig2, "report/project2/figs/stable-energy.eps", "epsc");
 
 %% Task 3
 U = rand(N, 1);
@@ -47,6 +46,7 @@ ylabel('Similarity');
 title('Multiple patterns');
 l = legend('V vs V', 'V_{noise} vs V', 'U vs U', 'U_{noise} vs U');
 l.Location = 'southeast';
+ylim([-0.1 1.1]);
 saveas(fig3, "report/project2/figs/multiple-patterns.eps", "epsc");
 fig4 = figure(4);
 plot(1:T, E);
@@ -119,6 +119,7 @@ l = legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
 l.Location = 'southeast';
 xlabel('Iterations');
 ylabel('Similarity');
+ylim([-0.1 1.1]);
 title("Stability of network");
 saveas(fig6, 'report/project2/figs/qr-code-sim.eps', "epsc");
 
@@ -200,35 +201,4 @@ function displayImage(I)
     yticks([]);
     xticks([]);
     colormap(gray);
-end
-
-function [M, H, S, E] = runSim(S, W, V, T)
-    P = size(V, 2);
-    N = size(S, 1);
-    M = zeros(T, P);
-    H = zeros(N, P);
-    E = zeros(T, P);
-    
-    for p = 1:P
-        it = randperm(N);
-        for t = 1:T
-            W_t = W(:, :, p);
-            W_t(1:N+1:end) = 0;
-            E(t, p) = energy2(S(:, p), W_t);
-            M(t, p) = S(:, p)' * V(:,p)  / N;
-            H(:, p) = W_t * S(:, p);
-            n = it(mod(t, N) + 1);
-            S(n, p) = sign(H(n, p));
-        end
-    end
-end
-
-function E = energy(S, W)
-    x = ones(numel(S), 1);
-    E = (-1/2) * x'* (W.*(S*S'))*x;
-end
-
-function E = energy2(S, W)
-    E = (-1/2)*S'*W*S;
-    assert(E == energy(S, W));
 end
