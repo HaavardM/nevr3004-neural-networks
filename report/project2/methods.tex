@@ -55,7 +55,7 @@ It is worth noticing $\bf \bar{W}$ is positive semi-definite and it can be showe
 \begin{equation*}
 \mathbf{z}^T\bar{\mathbf{W}} \mathbf{z} = \frac{1}{M}\sum_{m=1}^M \mathbf{z}^T \mathbf{V}^{(m)}(\mathbf{V}^{(m)})^T \mathbf{z} = \frac{1}{M}\sum_{m=1}^M (\mathbf{z}^T \mathbf{V}^{(m)})^2 \geq 0 \implies \mathbf{\bar{W}} \succeq 0
 \end{equation*}
-Using \cref{eq:energy-compact} we can form upper and lower bounds for the energy. Using the fact $\mathbf{\bar{W}} \succeq 0 \iff \mathbf{S}^T \mathbf{\bar{W}}\mathbf{S} \geq 0$, we get the upper limit.
+Using \cref{eq:energy-compact} we can form upper and lower bounds for the energy. We can think of these limits as how deep valleys we possibly can create using $N$ neurons. Using the fact $\mathbf{\bar{W}} \succeq 0 \iff \mathbf{S}^T \mathbf{\bar{W}}\mathbf{S} \geq 0$, we get the upper limit.
 \begin{equation*}
     E = -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \leq \frac{N}{2}
 \end{equation*}

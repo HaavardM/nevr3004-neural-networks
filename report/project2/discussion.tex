@@ -6,6 +6,10 @@ When simulating with multiple uncorrelated patterns the networks energy lower li
 
 The energy may also be used to quantify the robustness of the network. By considering the amount of work needed (in a physical sense) to move the state of the network from one memory to another, we can create a quantitative measure for how robust the network is to random perturbations. If the energy difference between two memories is small, a few bits are enough to switch the equlibrium state between two memories. Storing too many memories (i.e. too many small valleys), or storing very similar patterns will therefore decrease the robustness.
 
+Our results also showed that for each stored pattern, there are two equlibrium points (original and inverted pattern).  In other words, the Hopfield network only store what the state of a neuron should be relative to the others in the network and not the actual values. This appears to be consistent with how we as humans are able to associate memories with objects regardless of specific details - an apple is an apple regardless of whether it is real or painted.
+
+There are however many limitations to the Hopfield network, and it is in no way a perfect model of the mechanisms behind memory in humans or animals. It does however help us understand how a complex network of simple units (neurons) are able to recall memories, and many of its limiation have been solved in more modern approaches to ANNs.
+
 
 
 

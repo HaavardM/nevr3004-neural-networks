@@ -36,13 +36,11 @@ saveas(fig2, "report/project2/figs/stable-energy.eps", "epsc");
 
 % Task 3
 U = rand(N, 1);
-Y = rand(N, 1);
 U(U >= 0.5) = 1; U(U < 0.5) = -1;
-Y(Y >= 0.5) = 1; Y(Y < 0.5) = -1;
 U_noise = patternWithNoise(U, noise);
 Y_noise = patternWithNoise(Y, noise);
-W = (V*V' + U*U' + Y*Y') / 3;
-[M, H, S, E] = runSim([V,V_noise, U, U_noise, Y, Y_noise], repmat(W, 1, 1, 6), [V, V, U, U, Y, Y_noise], T);
+W = (V*V' + U*U') / 2;
+[M, H, S, E] = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), [V, V, U, U], T);
 fig3 = figure(3);
 plot(1:T, M*100);
 xlabel('Iterations');
