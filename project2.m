@@ -1,6 +1,9 @@
 close all; 
-set(groot,'defaultLineLineWidth',2.0)
+set(groot,'defaultLineLineWidth',3.0)
 mkdir('report/project2/figs');
+
+col = autumn(5);
+set(gca, 'colororder', col);
 
 N = 50;
 S = zeros(N,1);
@@ -9,8 +12,7 @@ V = rand(N,1);
 V(V >= 0.5) = 1;V(V < 0.5) = -1;
 % Create matrix with w_ij = (v_i*v_j/N)
 W = V * V';
-figure(11);
-imagesc(20*log(abs(W)));
+
 % Reset diagonal elements to zero (no self connections)
 
 % Task 1
@@ -22,8 +24,9 @@ plot(1:T, M*100); %The network is stable, and "reconstructs" the original patter
 xlabel('Iterations');
 ylabel('Similarity [%]');
 title(["Stability of network", "with single pattern", "compared to V"]);
-legend('V', 'V_{noise}');
-ylim([-10 110]);
+l = legend('V', 'V_{noise}');
+l.Location = 'southeast';
+ylim([-110 110]);
 
 saveas(fig1, "report/project2/figs/stable.eps", "epsc");
 fig2 = figure(2);
@@ -47,7 +50,7 @@ ylabel('Similarity [%]');
 title({'Similarity', 'with multiple patterns', 'compared to pattern V'});
 l = legend('V', 'V_{noise}', 'U', 'U_{noise}');
 l.Location = 'southeast';
-ylim([-10 110]);
+ylim([-110 110]);
 saveas(fig3, "report/project2/figs/multiple-patterns.eps", "epsc");
 fig4 = figure(4);
 plot(1:T, E);
@@ -120,8 +123,8 @@ l = legend('QR#1', 'QR#1 with noise', 'QR#2', 'QR#2 with loss');
 l.Location = 'southeast';
 xlabel('Iterations');
 ylabel('Similarity [%]');
-ylim([-10 110]);
-title("Stability of network");
+ylim([-110 110]);
+title(["Similarity of QR-codes", "compared with original"]);
 saveas(fig6, 'report/project2/figs/qr-code-sim.eps', "epsc");
 
 fig7 = figure(7);
