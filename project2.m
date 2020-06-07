@@ -14,21 +14,21 @@ imagesc(20*log(abs(W)));
 % Reset diagonal elements to zero (no self connections)
 
 % Task 1
-T = 100;
+T = 50;
 fig1 = figure(1);
 V_noise = patternWithNoise(V, noise);
 [M, H, S, E] = runSim([V, V_noise],repmat(W, 1, 1, 2),[V, V],T);
 plot(1:T, M*100); %The network is stable, and "reconstructs" the original pattern
 xlabel('Iterations');
 ylabel('Similarity [%]');
-title(["Stability of network", "with single pattern"]);
-legend('V vs V', 'V_{noise} vs V');
+title(["Stability of network", "with single pattern", "compared to V"]);
+legend('V', 'V_{noise}');
 ylim([-10 110]);
 
 saveas(fig1, "report/project2/figs/stable.eps", "epsc");
 fig2 = figure(2);
 plot(1:T, E);
-legend('V vs V', 'V_{noise} vs V');
+legend('V', 'V_{noise}');
 xlabel('Iterations');
 ylabel('Energy');
 title(["Energy of network", "with single pattern"]);
@@ -38,15 +38,14 @@ saveas(fig2, "report/project2/figs/stable-energy.eps", "epsc");
 U = rand(N, 1);
 U(U >= 0.5) = 1; U(U < 0.5) = -1;
 U_noise = patternWithNoise(U, noise);
-Y_noise = patternWithNoise(Y, noise);
 W = (V*V' + U*U') / 2;
-[M, H, S, E] = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), [V, V, U, U], T);
+[M, H, S, E] = runSim([V,V_noise, U, U_noise], repmat(W, 1, 1, 4), [V, V, V, V], T);
 fig3 = figure(3);
 plot(1:T, M*100);
 xlabel('Iterations');
 ylabel('Similarity [%]');
-title({'Similarity', 'with multiple patterns'});
-l = legend('V vs V', 'V_{noise} vs V', 'U vs U', 'U_{noise} vs U');
+title({'Similarity', 'with multiple patterns', 'compared to pattern V'});
+l = legend('V', 'V_{noise}', 'U', 'U_{noise}');
 l.Location = 'southeast';
 ylim([-10 110]);
 saveas(fig3, "report/project2/figs/multiple-patterns.eps", "epsc");

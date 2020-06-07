@@ -1,26 +1,26 @@
 \section{Method}
 
 \subsection{The Hopfield Network}
-The Hopfield Network is a simple fully-connected neural network, i.e. all neurons are connected to eachother. It is a recurrent neural network popularized by John Hopfield in \cite{hopfield}. Each neuron is either on (firing) or off (not firing) encoded as positive or negative values as showed in mathematical terms in \cref{eq:states}.
+The Hopfield Network is a simple fully-connected neural network, i.e. all neurons are connected to each other. The network is a recurrent neural network popularized by John Hopfield in \cite{hopfield}. Each neuron is either on (firing) or off (not firing) encoded as positive or negative values, as showed in mathematical terms in \cref{eq:states}.
 \begin{tcolorbox}[ams equation, title={Network States}] \label{eq:states}
     \mathbf{S} = \begin{bmatrix}
         s_1 \\ s_2 \\ \vdots \\ s_n
     \end{bmatrix}, \quad \mathbf{S} \in \{1, -1\}^{N\times1}
 \end{tcolorbox}
-The connection between two seperate neurons is weighted, and there are no self-connections. The weight matrix $\bf W$ can be initialized to store $M$ different patterns $\mathbf{V}^{(m)} \in \{1, -1\}^{N\times 1}$ using \cref{eq:weights}.
+The connection between two seperate neurons is weighted, and there are no self-connections. We used the Hebbian learning rule where the weight matrix $\bf W$ for storing $M$ different patterns $\mathbf{V}^{(m)} \in \{1, -1\}^{N\times 1}$ can be implemented using \cref{eq:weights}. Hebbian learning models how cells firing together gain stronger synaptic connections \cite{hebb}.
 \begin{tcolorbox}[ams align, title={Network Weights}] \label{eq:weights}
     \mathbf{W} &= {\bar{\mathbf{W}}} - diag^{-1}(\bar{\mathbf{W}}) & \bar{\mathbf{W}} &= \frac{1}{M}\sum_{m=1}^M \mathbf{V}^{(m)} (\mathbf{V}^{(m)})^T \succeq 0 
 \end{tcolorbox}
-Each element in the weight matrix then corresponds to \cite{hopfield}
+Each element in \cref{eq:energy} in the weight matrix then corresponds to \cite{hopfield}:
 \begin{equation*}
     w_{ij} = \begin{cases}
         \frac{1}{M}\sum_{m=1}^M v_{i}^{(m)} v_{j}^{(m)} & \forall i \neq j \\
         0 & \forall i = j
     \end{cases}
 \end{equation*}
-The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicate they should be pushed away from each other. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling dependent on the state of the spring.
+The weigths can be interpreted as whether neuron $i$ and neuron $j$ should be in the same or opposite states according to weight $w_{ij}$. A positive value indicates the neurons should be pulled toward the same state, while a negative value indicates they should be pushed away from each other. Each weight can be thought of as a spring connected between two neurons, either pushing or pulling depending on the state of the spring.
 
-The network states can be updated by using the update rule in \cref{eq:update}. Intuitively we can think of the update step as all other neurons are either pulling or pushing the state of the neuron towards $1$ or $-1$.
+The network states can be updated by using the update rule in \cref{eq:update}. Intuitively we can think of the update step as the updating neuron being pushed or pulled towards the state of all the other neurons, and the strongest state "wins".
 \begin{tcolorbox}[ams align, title={Update Step}]\label{eq:update}
     s_i &= sign(h_i) & h_i = \sum_{j=1}^N w_{ij} s_j \iff \mathbf{H} = \mathbf{W} \mathbf{S}
 \end{tcolorbox}
@@ -39,10 +39,10 @@ We can associate a number to each state of the network, which we refer to as the
     \end{subequations}
 \end{tcolorbox}
 The third equality \cref{eq:energy-compact} is valid since 
-\begin{equation}
+\begin{equation*}
     trace(\bar{\mathbf{W}}) = \mathbf{S}^T diag^{-1}(\bar{\mathbf{W}})\mathbf{S}
-\end{equation}
-The last equality, \cref{eq:energy}, comes from the fact the trace of $\bar{\mathbf{W}}$ (\cref{eq:weights}) is the sum of the diagonal elements, and the diagonal elements of $\bar{\mathbf{W}}$ are given by
+\end{equation*}
+The last equality, \cref{eq:energy}, comes from the fact that the trace of $\bar{\mathbf{W}}$ (\cref{eq:weights}) is the sum of the diagonal elements, and the diagonal elements of $\bar{\mathbf{W}}$ are given by
 \begin{equation}
     \bar{w}_{ii} = \frac{1}{M} \sum_{m=1}^M (v_i^{(m)})^2 \equiv 1
 \end{equation}
@@ -51,11 +51,11 @@ The trace of $\bar{\mathbf{W}}$ is therefore given by
     trace(\bar{\mathbf{W}}) = \sum_{n=1}^N 1 = N
 \end{equation}
 
-It is worth noticing $\bf \bar{W}$ is positive semi-definite and it can be showed using the definition of positive semi-definite matrices $\mathbf{z}^T \mathbf{A} \mathbf{z} \geq 0 \iff \mathbf{A} \succeq 0$.
+It is worth noticing that $\bf \bar{W}$ is positive semi-definite, which can be shown using the definition of positive semi-definite matrices $\mathbf{z}^T \mathbf{A} \mathbf{z} \geq 0 \iff \mathbf{A} \succeq 0$.
 \begin{equation*}
 \mathbf{z}^T\bar{\mathbf{W}} \mathbf{z} = \frac{1}{M}\sum_{m=1}^M \mathbf{z}^T \mathbf{V}^{(m)}(\mathbf{V}^{(m)})^T \mathbf{z} = \frac{1}{M}\sum_{m=1}^M (\mathbf{z}^T \mathbf{V}^{(m)})^2 \geq 0 \implies \mathbf{\bar{W}} \succeq 0
 \end{equation*}
-Using \cref{eq:energy-compact} we can form upper and lower bounds for the energy. We can think of these limits as how deep valleys we possibly can create using $N$ neurons. Using the fact $\mathbf{\bar{W}} \succeq 0 \iff \mathbf{S}^T \mathbf{\bar{W}}\mathbf{S} \geq 0$, we get the upper limit.
+Using \cref{eq:energy-compact} we can form upper and lower bounds for the energy. We can think of these limits as how deep valleys we possibly can create using $N$ neurons. Using the fact that $\mathbf{\bar{W}} \succeq 0 \iff \mathbf{S}^T \mathbf{\bar{W}}\mathbf{S} \geq 0$, we get the upper limit.
 \begin{equation*}
     E = -\frac{1}{2}(\mathbf{S}^T \bar{\mathbf{W}} \mathbf{S} - N) \leq \frac{N}{2}
 \end{equation*}
@@ -70,8 +70,9 @@ For the lower limit we assume all the addends in \cref{eq:energy-sum} are $1$. W
     \end{equation}
 \end{tcolorbox}
 
-For each stored pattern in \cref{eq:weights} there is a corresponding local optimum in \cref{eq:energy}.
-Using the energy function \cref{eq:energy} as a Lyapunov candidate, the stability of the Hopfield network can be proved by showing the energy is strictly decreasing when using the update rule in \cref{eq:update} \cite{lyapnuv-stability}.
+\begin{tcolorbox}[title={Intution behind the energy}]
+    \textit{We can get a more intuitive sense of how the Hopfield network is able to recall memories by comparing the energy in \cref{eq:energy} to a ball resting on a peak between two valleys. The position of the ball represents the current state of the neurons, and the equilibrium points of the valley represents the stored memories. If we give the ball even the slightest nudge to either side, the ball will eventually roll down until it reaches the lowest point of its closest valley, and the potential energy of the ball will decrease. To then move the ball further requires energy (i.e. work). As long as the ball is initialized within the correct valley, it will roll down to the correct equilibrium (memory). Using this intuition, the lower and upper energy limits in \cref{eq:energy-limits} correspond to the deepest possible valley and the highest possible peak respectively. While the large number of dimentions in the Hopfield network makes it difficult to visualize the valleys, the energy can still be interpereted in a physical sense.}
+\end{tcolorbox}
 
 
 
@@ -79,12 +80,12 @@ Using the energy function \cref{eq:energy} as a Lyapunov candidate, the stabilit
 \subsection{Simulating the Hopfield network}
 The Hopfield network can be simulated using MATLAB and \crefrange{eq:states}{eq:energy}. The code is available in \cref{sec:matlab_code}.
 \subsubsection*{Stability of a single pattern}
-A single pattern can be simulated using $N=50$ neurons, and by storing a single (random generated) pattern $\mathbf{V}$. Two simulations were then used, one where the states $\bf S$ were initialized to the pattern $\bf V$ and one with $20\%$ noise.
+A single pattern can be simulated using $N=50$ neurons, and by storing a single (random generated) pattern $\mathbf{V}$. Two simulations were used, one where the states $\bf S$ were initialized to the pattern $\bf V$ and one with $20\%$ noise. The noise was generated by initialized $80\%$ using the stored pattern, and initialized the remaining $20\%$ randomly with equal probability of $1$ and $-1$.
 \subsubsection*{Stability of multiple patterns}
-Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern, initializing the states with and without noise.
+Multiple patterns can be simulated by storing multiple patterns in $\bf W$ using \cref{eq:weights}. Simulations were then run for each pattern, initializing the states with and without noise. Each simulation was then compared to the same reference pattern.
 
 \subsubsection*{Creating patterns from QR codes}
-QR codes were generated using \href{https://miniwebtool.com/qr-code-generator/}{an online QR-code generator}, and resulted in $50 \times 50$ PNG images. The QR-codes were loaded in MATLAB, stripped for any white borders, converted from grayscale values to binary and encoded as a $\{1, -1\}^{N \times 1}$ vector. Two QR codes were generated and stored in the Hopfield network using \cref{eq:weights}. The first simulation was initialized to the first QR-code with large amount of noise. The second simulation was initialized to the second QR-code with half of the bits forced to 1 (i.e. losing half of the pattern). The number of iterations was increased due to the large amount of neurons.
+QR codes were generated using \href{https://miniwebtool.com/qr-code-generator/}{an online QR-code generator}, and resulted in $50 \times 50$ PNG images. The QR-codes were loaded in MATLAB, stripped for any white borders, converted from grayscale values to binary and encoded as a $\{1, -1\}^{N \times 1}$ vector. Two QR codes were generated and stored in the Hopfield network using \cref{eq:weights}. The first simulation was initialized to the first QR-code with large amounts of noise. The second simulation was initialized to the second QR-code with half of the bits forced to 1 (i.e. losing half of the pattern). The number of iterations was increased due to the large amount of neurons.
 
 
 
