@@ -37,7 +37,7 @@ ylabel('Energy');
 title(["Energy of network", "with single pattern"]);
 saveas(fig2, "report/project2/figs/stable-energy.eps", "epsc");
 
-% Task 3
+%% Task 3 - Multiple patterns
 U = rand(N, 1);
 U(U >= 0.5) = 1; U(U < 0.5) = -1;
 U_noise = patternWithNoise(U, noise);
@@ -59,6 +59,39 @@ ylabel('Energy');
 title({'Energy of network', 'with multiple patterns'});
 legend("V", "V_{noise}", "U", "U_{noise}");
 saveas(fig4, "report/project2/figs/multiple-patterns-energy.eps", "epsc");
+
+%% Task 3 - capacity limits
+N = 50;
+MEM = 10;
+Cit = 100;
+noise = linspace(0.1, 0.5, 5);
+succ = zeros(MEM, length(noise));
+for it = 1:Cit
+for m = 1:MEM
+for n = 1:length(noise)
+U = rand(N,m);
+U(U >= 0.5) = 1; U (U < 0.5) = -1;
+U_noise = patternWithNoise(U, noise(n));
+T = 2*N;
+W = zeros(N, N);
+for i = 1:m 
+    W = W + U(:, i)*U(:, i)';
+end
+W = W / m - eye(N);
+[M, H, S, E] = runSim(U_noise, repmat(W, 1, 1, m), U, T);
+succ(m, n) = succ(m, n) + mean(M(end, :) == 1);
+end
+end
+end
+fig31 = figure(31);
+plot(1:MEM, succ / Cit)
+xlabel("Number of stored memories");
+ylabel("Success rate [%]");
+title(["Memory restore success rate", "for different noise levels"])
+legend(compose("Noise: %.1f %%", noise*100));
+ylim([0, 1.1]);
+saveas(fig31, 'report/project2/figs/capacity.eps', "epsc");
+
 %% QR-codes
 noise = 0.9;
 fig5 = figure(5);
@@ -181,7 +214,10 @@ function [V_noise] = patternWithNoise(V, p)
     V_noise = V;
     N = size(V, 1);
     n_p = floor(p*N);
-    V_noise(randsample(N, n_p)) = rand(n_p, 1);
+    
+    for i = 1:size(V, 2)
+        V_noise(randsample(N, n_p), i) = rand(n_p, 1);
+    end
     V_noise(V_noise >= 0.5) = 1; V_noise(V_noise < 0.5) = -1;
 end
 
@@ -205,4 +241,8 @@ function displayImage(I)
     yticks([]);
     xticks([]);
     colormap(gray);
+end
+
+function E = lowerEnergy(N) 
+    E = -(1/2)*N*(N-1);
 end

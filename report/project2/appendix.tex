@@ -1,0 +1,18 @@
+\appendix
+\section{Proof of equation \ref{eq:energy}}\label{sec:proofenergy}
+The third equality \cref{eq:energy-compact} is valid since 
+\begin{equation*}
+    trace(\bar{\mathbf{W}}) = \mathbf{S}^T diag^{-1}(\bar{\mathbf{W}})\mathbf{S}
+\end{equation*}
+The last equality, \cref{eq:energy}, comes from the fact that the trace of $\bar{\mathbf{W}}$ (\cref{eq:weights}) is the sum of the diagonal elements, and the diagonal elements of $\bar{\mathbf{W}}$ are given by
+\begin{equation}
+    \bar{w}_{ii} = \frac{1}{M} \sum_{m=1}^M (v_i^{(m)})^2 \equiv 1
+\end{equation}
+The trace of $\bar{\mathbf{W}}$ is therefore given by 
+\begin{equation}
+    trace(\bar{\mathbf{W}}) = \sum_{n=1}^N 1 = N
+\end{equation}
+
+\section{Matlab Code} \label{sec:matlab_code}
+\lstinputlisting[breaklines=true,language=MATLAB]{../../project2.m}
+\lstinputlisting[breaklines=true,language=MATLAB]{../../runSim.m}
